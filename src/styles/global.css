@@ -1,0 +1,13 @@
+.mark-item {
+    text-decoration: line-through;
+    color: grey;
+}
+svg {
+    cursor: pointer;
+}
+.bg-img-main-container {
+    position: absolute;
+    z-index: -1;
+}
+.bg-img-main {
+}
