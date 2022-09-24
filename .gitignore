@@ -25,3 +25,6 @@ dist-ssr
 
 # Swap files from vim
 *~
+*.swp
+*.swp
+*.swo
