@@ -61,7 +61,6 @@ export default function Tod({
                         onChange={(e) =>
                             listFunctions.toggleStrikeThroughBox(e, index)
                         }
-                        sx={{ paddingLeft: "0px" }}
                     />
                     <Container>
                         {isDisabled ? (
@@ -87,8 +86,8 @@ export default function Tod({
                         onChange={makeBoxEditable}
                     />
                     <IconButton
-                        sx={{ paddingRight: "0px" }}
                         onClick={(e) => listFunctions.removeTodo(e, uuid)}
+
                     >
                         <DeleteIcon />
                     </IconButton>

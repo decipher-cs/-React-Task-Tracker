@@ -9,10 +9,9 @@ export default function TodCreator({ appendTodo }) {
         <>
             <Paper
                 variant="outlined"
-                sx={{ marginBottom: "30px", paddingInline: "20px" }}
+                sx={{ marginBottom: "30px"}}
             >
                 <Checkbox
-                    sx={{ paddingLeft: "0px" }}
                     icon={<CheckCircleOutlinedIcon />}
                     checkedIcon={<CheckCircleIcon />}
                     onChange={(e) => setIsChecked(e.target.checked)}

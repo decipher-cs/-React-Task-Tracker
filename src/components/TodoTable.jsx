@@ -123,7 +123,7 @@ export default function TodoTable(props) {
                     </Button>
                 </Stack>
                 <TodCreator appendTodo={appendTodo} />
-                <Paper sx={{ paddingInline: "20px" }}>
+                <Paper >
                     <DragDropContext onDragEnd={handleDrag}>
                         <Droppable droppableId="list-container">
                             {(provided) => (
