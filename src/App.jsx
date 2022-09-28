@@ -10,6 +10,7 @@ import bgMobileDark from "./assets/bg-mobile-dark.jpg"
 import bgDesktopLight from "./assets/bg-desktop-light.jpg"
 import bgMobileLight from "./assets/bg-mobile-light.jpg"
 import { useEffect, useState } from "react"
+import CssBaseline from "@mui/material/CssBaseline"
 
 const darkTheme = createTheme({
     palette: {
@@ -28,7 +29,7 @@ function App() {
     const Wallpaper = ({ bg }) => <img src={bg} className="bg-img-main" />
 
     useEffect(() => {
-        setDarkMode(localStorage.getItem("theme") === 'true') // Is "theme" === true set isDarkmode to true
+        setDarkMode(localStorage.getItem("theme") === "true") // Is "theme" === true set isDarkmode to true
     }, [])
 
     useEffect(() => {
@@ -37,22 +38,24 @@ function App() {
     return (
         <>
             <ThemeProvider theme={isDarkmode ? darkTheme : lightTheme}>
-                <div className="bg-img-main-container">
-                    {isSizeDesktop ? (
-                        <Wallpaper
-                            bg={isDarkmode ? bgDesktopDark : bgDesktopLight}
-                        />
-                    ) : (
-                        <Wallpaper
-                            bg={isDarkmode ? bgMobileDark : bgMobileLight}
-                        />
-                    )}
-                </div>
+                <CssBaseline>
+                    <div className="bg-img-main-container">
+                        {isSizeDesktop ? (
+                            <Wallpaper
+                                bg={isDarkmode ? bgDesktopDark : bgDesktopLight}
+                            />
+                        ) : (
+                            <Wallpaper
+                                bg={isDarkmode ? bgMobileDark : bgMobileLight}
+                            />
+                        )}
+                    </div>
 
-                <TodoTable
-                    toggleDarkmode={() => setDarkMode((prev) => !prev)}
-                    isDarkmode={isDarkmode}
-                />
+                    <TodoTable
+                        toggleDarkmode={() => setDarkMode((prev) => !prev)}
+                        isDarkmode={isDarkmode}
+                    />
+                </CssBaseline>
             </ThemeProvider>
         </>
     )
