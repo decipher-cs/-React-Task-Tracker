@@ -40,7 +40,6 @@ export default function Tod({
             setDisabled(true)
             return
         }
-        console.log("was true now set to false")
         setDisabled(false)
     }
     let handleChange = (e) => {

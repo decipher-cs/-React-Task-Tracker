@@ -7,10 +7,6 @@ import { DragDropContext, Droppable } from "react-beautiful-dnd"
 import { Container, Paper, Stack, Typography, Button } from "@mui/material/"
 import LightModeIcon from "@mui/icons-material/LightMode"
 
-// TODO : On 20-sep for 21-sep -> Change the chip which shows total number of todos to show only the amount corresponding to the selected filter type.
-// On 21-sep for 22-sep -> fix/ reprogram the tally counter and sync it with all the functions.
-// On 23-sep impliment local storage.
-
 export default function TodoTable() {
     const [todos, setTodos] = useState([])
     const [tally, setTally] = useState({
@@ -20,24 +16,7 @@ export default function TodoTable() {
     })
 
     useEffect(() => {
-        console.log("PAGE HAS LOADED SUCCESSUFULLY.")
-        let todoData = JSON.parse(localStorage.getItem("current-todos"))
-        console.log("on initial page load", todoData)
-        // setTodos([
-        //     {
-        //         uuid: "0e7347fb-15f0-49f0-bd30-584bfd0fb840",
-        //         todoText: "fvsdf",
-        //         isHidden: false,
-        //         isComplete: false,
-        //     },
-        //     {
-        //         uuid: "d1110bb8-3be6-452b-bab7-5706887ff38e",
-        //         todoText: "hello world",
-        //         isHidden: false,
-        //         isComplete: false,
-        //     },
-        // ]) // THIS IS ASYNC I THINK... WIHCH IS WHAT IS CAUSEING THE PROBLEM.
-        setTodos(todoData)
+        setTodos(JSON.parse(localStorage.getItem("current-todos")))
     }, [])
 
     useEffect(() => {
@@ -56,10 +35,6 @@ export default function TodoTable() {
 
     let updateLocalStorage = () => {
         localStorage.setItem("current-todos", JSON.stringify(todos))
-        // console.log(
-        //     "new dev :",
-        //     JSON.parse(localStorage.getItem("current-todos"))
-        // )
     }
 
     let removeTodo = (_, index) => {

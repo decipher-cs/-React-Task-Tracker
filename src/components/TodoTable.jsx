@@ -4,10 +4,17 @@ import TodoContainer from "./TodoContainer"
 import { v4 as uuidv4 } from "uuid"
 import UtilityBar from "./UtilityBar"
 import { DragDropContext, Droppable } from "react-beautiful-dnd"
-import { Container, Paper, Stack, Typography, Button } from "@mui/material/"
+import {
+    Container,
+    Paper,
+    Stack,
+    Typography,
+    Button,
+} from "@mui/material/"
 import LightModeIcon from "@mui/icons-material/LightMode"
+import Brightness3Icon from "@mui/icons-material/Brightness3"
 
-export default function TodoTable() {
+export default function TodoTable(props) {
     const [todos, setTodos] = useState([])
     const [tally, setTally] = useState({
         all: todos.length,
@@ -42,6 +49,7 @@ export default function TodoTable() {
         newTodoList = newTodoList.filter((item) => item.uuid !== index)
         setTodos(newTodoList)
     }
+
     let appendTodo = (e, isChecked) => {
         let newTextValue = e.target.value.trim()
         if (e.key === "Enter" && newTextValue.length) {
@@ -58,6 +66,7 @@ export default function TodoTable() {
             e.target.value = ""
         }
     }
+
     let handleFilter = (filterType) => {
         let filteredList = todos.slice()
         filteredList.map((item) => {
@@ -71,21 +80,25 @@ export default function TodoTable() {
             setTodos(filteredList)
         })
     }
+
     let clearAllCompleted = () => {
         let listCopy = todos.slice()
         listCopy = listCopy.filter((item) => item.isComplete !== true)
         setTodos(listCopy)
     }
+
     let toggleStrikeThroughBox = (_, index) => {
         let newTodoList = todos.slice()
         newTodoList[index].isComplete = !newTodoList[index].isComplete
         setTodos(newTodoList)
     }
+
     let changeTextValue = (index, newTextValue) => {
         let newTodoList = todos.slice()
         newTodoList[index].todoText = newTextValue
         setTodos(newTodoList)
     }
+
     let handleDrag = (e) => {
         if (!e.destination) return
         let reorderedList = todos.slice()
@@ -93,13 +106,20 @@ export default function TodoTable() {
         reorderedList.splice(e.destination.index, 0, tempObj)
         setTodos(reorderedList)
     }
+
     return (
         <>
             <Container maxWidth="sm">
                 <Stack direction="row" justifyContent="space-between">
-                    <Typography variant="h3">TODO</Typography>
-                    <Button>
-                        <LightModeIcon />
+                    <Typography variant="h3" color="white">
+                        TODO
+                    </Typography>
+                    <Button onClick={props.toggleDarkmode}>
+                        {props.isDarkmode ? (
+                            <Brightness3Icon />
+                        ) : (
+                            <LightModeIcon />
+                        )}
                     </Button>
                 </Stack>
                 <TodCreator appendTodo={appendTodo} />
