@@ -2,10 +2,10 @@ import {
     Checkbox,
     Input,
     Container,
-    Typography,
     Stack,
     Switch,
     IconButton,
+    Typography
 } from "@mui/material"
 
 import { useState } from "react"
@@ -87,7 +87,6 @@ export default function Tod({
                     />
                     <IconButton
                         onClick={(e) => listFunctions.removeTodo(e, uuid)}
-
                     >
                         <DeleteIcon />
                     </IconButton>

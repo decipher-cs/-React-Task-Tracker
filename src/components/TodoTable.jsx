@@ -4,13 +4,7 @@ import TodoContainer from "./TodoContainer"
 import { v4 as uuidv4 } from "uuid"
 import UtilityBar from "./UtilityBar"
 import { DragDropContext, Droppable } from "react-beautiful-dnd"
-import {
-    Container,
-    Paper,
-    Stack,
-    Typography,
-    Button,
-} from "@mui/material/"
+import { Container, Paper, Stack, Typography, Button } from "@mui/material/"
 import LightModeIcon from "@mui/icons-material/LightMode"
 import Brightness3Icon from "@mui/icons-material/Brightness3"
 
@@ -109,7 +103,7 @@ export default function TodoTable(props) {
 
     return (
         <>
-            <Container maxWidth="sm">
+            <Container maxWidth="sm" sx={{marginTop: '50px'}}>
                 <Stack direction="row" justifyContent="space-between">
                     <Typography variant="h3" color="white">
                         TODO
@@ -123,7 +117,7 @@ export default function TodoTable(props) {
                     </Button>
                 </Stack>
                 <TodCreator appendTodo={appendTodo} />
-                <Paper >
+                <Paper>
                     <DragDropContext onDragEnd={handleDrag}>
                         <Droppable droppableId="list-container">
                             {(provided) => (

@@ -6,8 +6,17 @@ svg {
     cursor: pointer;
 }
 .bg-img-main-container {
-    position: absolute;
+    position: fixed;
     z-index: -1;
+    /* margin-top: 100px; */
 }
+.test {
+    margin-top: 180px;
+}
+
+/* for the image */
 .bg-img-main {
+    display: inline-block;
+    z-index: -1;
+    position: absolute;
 }
