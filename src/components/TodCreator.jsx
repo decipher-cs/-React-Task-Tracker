@@ -8,7 +8,11 @@ export default function TodCreator({ appendTodo }) {
     return (
         <>
             <Paper
-                sx={{ marginBlock: "30px"}}
+                sx={{
+                    marginBlock: "30px",
+                    paddingInline: "0.9em",
+                    paddingBlock: "0.3em",
+                }}
             >
                 <Checkbox
                     icon={<CheckCircleOutlinedIcon />}

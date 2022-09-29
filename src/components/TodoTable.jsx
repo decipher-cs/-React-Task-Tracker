@@ -145,7 +145,7 @@ export default function TodoTable(props) {
                         tally={tally}
                     />
                 </Paper>
-                <Typography variant="subtitle2" textAlign="center">
+                <Typography variant="subtitle2" textAlign="center" sx={{marginTop: '40px'}} color='#999999'>
                     Drag and drop to reorder list
                 </Typography>
             </Container>

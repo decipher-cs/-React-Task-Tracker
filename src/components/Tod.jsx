@@ -5,7 +5,7 @@ import {
     Stack,
     Switch,
     IconButton,
-    Typography
+    Typography,
 } from "@mui/material"
 
 import { useState } from "react"
@@ -50,6 +50,8 @@ export default function Tod({
         <>
             {isHidden || (
                 <Stack
+                    paddingInline="0.9em"
+                    paddingBlock="0.3em"
                     direction="row"
                     alignItems="center"
                     // justifyContent="spece-between"

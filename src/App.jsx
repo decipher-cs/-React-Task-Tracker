@@ -37,25 +37,27 @@ function App() {
     }, [isDarkmode])
     return (
         <>
-            <img src={bgDesktopDark} className="bg-img-main" />
-            <Typography variant='h4' sx={{marginTop: '100px'}} className="test">hello</Typography>
-            {/* <ThemeProvider theme={isDarkmode ? darkTheme : lightTheme}> */}
-            {/* <CssBaseline> */}
-            {/* <div className="bg-img-main-container"> */}
-            {/*     {isSizeDesktop ? ( */}
-            {/*         <Wallpaper */}
-            {/*             bg={isDarkmode ? bgDesktopDark : bgDesktopLight} */}
-            {/*         /> */}
-            {/*     ) : ( */}
-            {/*         <Wallpaper bg={isDarkmode ? bgMobileDark : bgMobileLight} /> */}
-            {/*     )} */}
-            {/* </div> */}
-            {/* <TodoTable  */}
-            {/*     toggleDarkmode={() => setDarkMode((prev) => !prev)} */}
-            {/*     isDarkmode={isDarkmode} */}
-            {/* /> */}
-            {/* </CssBaseline> */}
-            {/* </ThemeProvider> */}
+            <ThemeProvider theme={isDarkmode ? darkTheme : lightTheme}>
+                <CssBaseline>
+                <div style={{display: 'flow-root'}}>
+                    <div className="bg-img-main-container">
+                        {isSizeDesktop ? (
+                            <Wallpaper
+                                bg={isDarkmode ? bgDesktopDark : bgDesktopLight}
+                            />
+                        ) : (
+                            <Wallpaper
+                                bg={isDarkmode ? bgMobileDark : bgMobileLight}
+                            />
+                        )}
+                    </div>
+                    <TodoTable
+                        toggleDarkmode={() => setDarkMode((prev) => !prev)}
+                        isDarkmode={isDarkmode}
+                    />
+                </div>
+                </CssBaseline>
+            </ThemeProvider>
         </>
     )
 }
