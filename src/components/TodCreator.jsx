@@ -10,8 +10,8 @@ export default function TodCreator({ appendTodo }) {
             <Paper
                 sx={{
                     marginBlock: "30px",
-                    paddingInline: "0.9em",
-                    paddingBlock: "0.3em",
+                    px: 2,
+                    py: 0.5,
                 }}
             >
                 <Checkbox
@@ -20,10 +20,12 @@ export default function TodCreator({ appendTodo }) {
                     onChange={(e) => setIsChecked(e.target.checked)}
                 />
                 <TextField
-                    placeholder="Enter Item Here"
-                    id="standard-basic"
+                    placeholder="Enter Item Here..."
+                    size="small"
+                    fillWidth
+                    disableUnderline
                     variant="standard"
-                    margin="none"
+                    margin="dense"
                     onKeyDown={(e) => appendTodo(e, isChecked)}
                 />
             </Paper>

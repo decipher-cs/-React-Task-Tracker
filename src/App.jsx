@@ -10,14 +10,21 @@ import bgDesktopLight from "./assets/bg-desktop-light.jpg"
 import bgMobileLight from "./assets/bg-mobile-light.jpg"
 import { useEffect, useState } from "react"
 import CssBaseline from "@mui/material/CssBaseline"
-import { Typography, Box } from "@mui/material/"
+
+const commonTheme = {
+    typography: {
+        fontFamily: ["Josefin Sans", "sans-serif"].join(","),
+    },
+}
 
 const darkTheme = createTheme({
+    ...commonTheme,
     palette: {
         mode: "dark",
     },
 })
 const lightTheme = createTheme({
+    ...commonTheme,
     palette: {
         mode: "light",
     },
@@ -39,23 +46,31 @@ function App() {
         <>
             <ThemeProvider theme={isDarkmode ? darkTheme : lightTheme}>
                 <CssBaseline>
-                <div style={{display: 'flow-root'}}>
-                    <div className="bg-img-main-container">
-                        {isSizeDesktop ? (
-                            <Wallpaper
-                                bg={isDarkmode ? bgDesktopDark : bgDesktopLight}
-                            />
-                        ) : (
-                            <Wallpaper
-                                bg={isDarkmode ? bgMobileDark : bgMobileLight}
-                            />
-                        )}
+                    <div style={{ display: "flow-root" }}>
+                        <div className="bg-img-main-container">
+                            {isSizeDesktop ? (
+                                <Wallpaper
+                                    bg={
+                                        isDarkmode
+                                            ? bgDesktopDark
+                                            : bgDesktopLight
+                                    }
+                                />
+                            ) : (
+                                <Wallpaper
+                                    bg={
+                                        isDarkmode
+                                            ? bgMobileDark
+                                            : bgMobileLight
+                                    }
+                                />
+                            )}
+                        </div>
+                        <TodoTable
+                            toggleDarkmode={() => setDarkMode((prev) => !prev)}
+                            isDarkmode={isDarkmode}
+                        />
                     </div>
-                    <TodoTable
-                        toggleDarkmode={() => setDarkMode((prev) => !prev)}
-                        isDarkmode={isDarkmode}
-                    />
-                </div>
                 </CssBaseline>
             </ThemeProvider>
         </>

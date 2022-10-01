@@ -13,7 +13,12 @@ const UtilityBar = ({ filterList, clearAllCompleted, tally }) => {
 
     return (
         <>
-            <Stack direction="row" justifyContent="space-between">
+            <Stack
+                direction="row"
+                justifyContent="space-between"
+                px={2}
+                py={1}
+            >
                 <Select
                     onChange={(e) => setSelectValue(e.target.value)}
                     variant="standard"
@@ -50,7 +55,7 @@ const UtilityBar = ({ filterList, clearAllCompleted, tally }) => {
                     ))}
                 </ToggleButtonGroup>
                 <Button size="small" onClick={clearAllCompleted}>
-                    clear all
+                    clear completed
                 </Button>
             </Stack>
         </>

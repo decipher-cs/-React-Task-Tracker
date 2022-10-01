@@ -50,8 +50,8 @@ export default function Tod({
         <>
             {isHidden || (
                 <Stack
-                    paddingInline="0.9em"
-                    paddingBlock="0.3em"
+                    px={2}
+                    py={0.5}
                     direction="row"
                     alignItems="center"
                     // justifyContent="spece-between"
