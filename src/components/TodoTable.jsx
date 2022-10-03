@@ -9,7 +9,8 @@ import LightModeIcon from "@mui/icons-material/LightMode"
 import Brightness3Icon from "@mui/icons-material/Brightness3"
 
 export default function TodoTable(props) {
-    const [todos, setTodos] = useState([])
+    const SERVER_URL = "http://localhost:8080/todos"
+    const [todos, setTodos] = useState([]) // array of objects
     const [tally, setTally] = useState({
         all: todos.length,
         active: 0,
@@ -17,7 +18,7 @@ export default function TodoTable(props) {
     })
 
     useEffect(() => {
-        setTodos(JSON.parse(localStorage.getItem("current-todos")))
+        getEverythingFromServer().then((res) => setTodos(res))
     }, [])
 
     useEffect(() => {
@@ -34,9 +35,42 @@ export default function TodoTable(props) {
         updateLocalStorage()
     }, [todos])
 
-    let updateLocalStorage = () => {
-        localStorage.setItem("current-todos", JSON.stringify(todos))
+    let getEverythingFromServer = async () => {
+        let res = await fetch(SERVER_URL)
+        return (res = await res.json())
+        // Do error checking here. Was the response 200 or did it fail? todo
     }
+
+    let addItemToServer = async (itemObj) => {
+        const response = await fetch(SERVER_URL, {
+            method: "POST",
+            body: JSON.stringify(itemObj),
+        })
+        // Do error checking here. Was the response 200 or did it fail? todo
+    }
+
+    let deleteItemFromServer = async (itemUuid) => {
+        const response = await fetch(`${SERVER_URL}/${itemUuid}`)
+        // Do error checking here. Was the response 200 or did it fail? todo
+    }
+
+    let deleteCompletedItemsFromServer = async () => {
+        const response = await fetch(SERVER_URL + "/deleteCompleted")
+        // Do error checking here. Was the response 200 or did it fail? todo
+    }
+    let editSingleItemInServer = async (newItemObj) => {
+        const response = await fetch(`${SERVER_URL}/${newItemObj.uuid}`, {
+            method: "POST",
+            body: JSON.stringify(newItemObj),
+        })
+        // Do error checking here. Was the response 200 or did it fail? todo
+    }
+
+    let getItemsFromLocalStorage = () =>
+        JSON.parse(localStorage.getItem("current-todos"))
+
+    let updateLocalStorage = () =>
+        localStorage.setItem("current-todos", JSON.stringify(todos))
 
     let removeTodo = (_, index) => {
         let newTodoList = todos.slice()
@@ -103,7 +137,7 @@ export default function TodoTable(props) {
 
     return (
         <>
-            <Container maxWidth="sm" sx={{marginTop: '50px'}}>
+            <Container maxWidth="sm" sx={{ marginTop: "50px" }}>
                 <Stack direction="row" justifyContent="space-between">
                     <Typography variant="h3" color="white">
                         TODO
@@ -145,7 +179,12 @@ export default function TodoTable(props) {
                         tally={tally}
                     />
                 </Paper>
-                <Typography variant="subtitle2" textAlign="center" sx={{marginTop: '40px'}} color='#999999'>
+                <Typography
+                    variant="subtitle2"
+                    textAlign="center"
+                    sx={{ marginTop: "40px" }}
+                    color="#999999"
+                >
                     Drag and drop to reorder list
                 </Typography>
             </Container>

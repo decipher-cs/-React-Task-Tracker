@@ -1,7 +1,6 @@
 import Tod from "./Tod"
 import Divider from "@mui/material/Divider"
 import { Draggable } from "react-beautiful-dnd"
-import { Box } from "@mui/material/"
 
 export default function TodoContainer({
     todos,
