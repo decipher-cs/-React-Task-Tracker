@@ -42,7 +42,9 @@ export default function TodoTable(props) {
     }
 
     let addItemToServer = async (itemObj) => {
+        console.log(itemObj)
         const response = await fetch(SERVER_URL, {
+            headers: { "Content-Type": "application/json" },
             method: "POST",
             body: JSON.stringify(itemObj),
         })
@@ -50,14 +52,19 @@ export default function TodoTable(props) {
     }
 
     let deleteItemFromServer = async (itemUuid) => {
-        const response = await fetch(`${SERVER_URL}/${itemUuid}`)
+        const response = await fetch(`${SERVER_URL}/${itemUuid}`, {
+            method: "POST",
+        })
         // Do error checking here. Was the response 200 or did it fail? todo
     }
 
     let deleteCompletedItemsFromServer = async () => {
-        const response = await fetch(SERVER_URL + "/deleteCompleted")
+        const response = await fetch(SERVER_URL + "/deleteCompleted", {
+            method: "POST",
+        })
         // Do error checking here. Was the response 200 or did it fail? todo
     }
+
     let editSingleItemInServer = async (newItemObj) => {
         const response = await fetch(`${SERVER_URL}/${newItemObj.uuid}`, {
             method: "POST",
@@ -72,24 +79,29 @@ export default function TodoTable(props) {
     let updateLocalStorage = () =>
         localStorage.setItem("current-todos", JSON.stringify(todos))
 
-    let removeTodo = (_, index) => {
+    let removeTodo = (_, uuidToRemove) => {
         let newTodoList = todos.slice()
-        newTodoList = newTodoList.filter((item) => item.uuid !== index)
+        deleteItemFromServer(uuidToRemove).then(
+            "item with uuid",
+            uuidToRemove,
+            "removed."
+        )
+        newTodoList = newTodoList.filter((item) => item.uuid !== uuidToRemove)
         setTodos(newTodoList)
     }
 
     let appendTodo = (e, isChecked) => {
         let newTextValue = e.target.value.trim()
         if (e.key === "Enter" && newTextValue.length) {
-            setTodos((prev) =>
-                prev.concat([
-                    {
-                        uuid: uuidv4(),
-                        todoText: newTextValue,
-                        isHidden: false,
-                        isComplete: isChecked,
-                    },
-                ])
+            let newObj = {
+                uuid: uuidv4(),
+                todoText: newTextValue,
+                isHidden: false,
+                isComplete: isChecked,
+            }
+            setTodos((prev) => prev.concat([newObj]))
+            addItemToServer(newObj).then(() =>
+                console.log("done adding to the server...")
             )
             e.target.value = ""
         }
@@ -112,6 +124,9 @@ export default function TodoTable(props) {
     let clearAllCompleted = () => {
         let listCopy = todos.slice()
         listCopy = listCopy.filter((item) => item.isComplete !== true)
+        deleteCompletedItemsFromServer().then(() =>
+            console.log("All completed items have been removed")
+        )
         setTodos(listCopy)
     }
 
