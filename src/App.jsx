@@ -33,7 +33,7 @@ const lightTheme = createTheme({
 function App() {
     const isSizeDesktop = useMediaQuery("(min-width:390px)")
     const [isDarkmode, setDarkMode] = useState(true)
-    const Wallpaper = ({ bg }) => <img src={bg} className="bg-img-main" />
+    const Wallpaper = ({ bg }) => <img src={bg} className="bg-img-main" style={{minWidth: '100vw'}} />
 
     useEffect(() => {
         setDarkMode(localStorage.getItem("theme") === "true") // Is "theme" === true set isDarkmode to true
