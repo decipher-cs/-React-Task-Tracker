@@ -4,9 +4,9 @@ Your average todo app but with quite a few functionalities added to it.
 
 ## Index
 
-* [tech used](#techused)
-* [links](#links)
-* [Todo](#todo)
+- [links](#links)
+- [tech used](#Techused)
+- [Todo](#todo)
 
 ### Links
 
@@ -31,6 +31,9 @@ Your average todo app but with quite a few functionalities added to it.
 - [ ] Don't wait for database on initial load. Show a skeleton instead on the place of all the todo items.
 - [ ] Add a mui snackbar for when connection with database could not be established.
 - [ ] Add link to backend in readme and vice versa.
+- [ ] Put catch blocks on the fetch api throughout the code.
+- [ ] Add pagination.
+
 ### Acknowledgement
 
 ???
