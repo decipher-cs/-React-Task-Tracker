@@ -38,7 +38,7 @@ export default function TodoTable(props) {
     }, [todos])
 
     let getEverythingFromServer = async () => {
-        let res = await fetch(SERVER_URL)
+        let res = await fetch(`${SERVER_URL}/todos`)
         return (res = await res.json())
         // Do error checking here. Was the response 200 or did it fail? todo
     }
