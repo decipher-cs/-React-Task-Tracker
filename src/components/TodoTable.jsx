@@ -9,7 +9,9 @@ import LightModeIcon from "@mui/icons-material/LightMode"
 import Brightness3Icon from "@mui/icons-material/Brightness3"
 
 export default function TodoTable(props) {
-    const SERVER_URL = "http://localhost:8080/todos"
+    // const SERVER_URL = "http://localhost:8080/todos" // Testing
+    const SERVER_URL = "https://doubtful-ox-button.cyclic.app/" // Production
+
     const [todos, setTodos] = useState([]) // array of objects
     const [tally, setTally] = useState({
         all: todos.length,

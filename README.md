@@ -30,7 +30,7 @@ Your average todo app but with quite a few functionalities added to it.
 - [ ] Idea: put a switch on the header to use local storage or remote database according to user preference.
 - [ ] Don't wait for database on initial load. Show a skeleton instead on the place of all the todo items.
 - [ ] Add a mui snackbar for when connection with database could not be established.
-
+- [ ] Add link to backend in readme and vice versa.
 ### Acknowledgement
 
 ???
