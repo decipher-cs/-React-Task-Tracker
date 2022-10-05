@@ -45,7 +45,7 @@ export default function TodoTable(props) {
 
     let addItemToServer = async (itemObj) => {
         console.log(itemObj)
-        const response = await fetch(SERVER_URL, {
+        const response = await fetch(`${SERVER_URL}/todos`, {
             headers: { "Content-Type": "application/json" },
             method: "POST",
             body: JSON.stringify(itemObj),
