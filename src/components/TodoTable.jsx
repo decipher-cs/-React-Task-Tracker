@@ -1,40 +1,40 @@
-import { useState, useEffect, useReducer } from "react"
-import TodCreator from "./TodCreator"
-import TodoContainer from "./TodoContainer"
-import { v4 as uuidv4 } from "uuid"
-import UtilityBar from "./UtilityBar"
-import { DragDropContext, Droppable } from "react-beautiful-dnd"
-import {
-    Container,
-    Paper,
-    Stack,
-    Pagination,
-    Typography,
-    Button,
-    Snackbar,
-    Alert,
-} from "@mui/material/"
-import LightModeIcon from "@mui/icons-material/LightMode"
-import Brightness3Icon from "@mui/icons-material/Brightness3"
+import { useState, useEffect, useReducer } from 'react'
+import TodCreator from './TodCreator'
+import TodoContainer from './TodoContainer'
+import { v4 as uuidv4 } from 'uuid'
+import UtilityBar from './UtilityBar'
+import { DragDropContext, Droppable } from 'react-beautiful-dnd'
+import { Container, Paper, Stack, Pagination, Typography, Button, Snackbar, Alert } from '@mui/material/'
+import LightModeIcon from '@mui/icons-material/LightMode'
+import Brightness3Icon from '@mui/icons-material/Brightness3'
 
+// ["error","info","success","warning"]
 function reducer(state, action) {
     switch (action.type) {
-        case "warning":
+        case 'close':
+            return { ...state, showSnackbar: false }
+        case 'warning':
             return {
-                showSnackbar: !state.showSnackbar,
-                alertSeverity: "warning",
+                showSnackbar: true,
+                alertSeverity: 'warning',
                 alertMessage: action.payload.message,
             }
-        case "info":
+        case 'info':
             return {
-                showSnackbar: !state.showSnackbar,
-                alertSeverity: "info",
+                showSnackbar: true,
+                alertSeverity: 'info',
                 alertMessage: action.payload.message,
             }
-        case "success":
+        case 'success':
             return {
-                showSnackbar: !state.showSnackbar,
-                alertSeverity: "success",
+                showSnackbar: true,
+                alertSeverity: 'success',
+                alertMessage: action.payload.message,
+            }
+        case 'error':
+            return {
+                showSnackbar: true,
+                alertSeverity: 'error',
                 alertMessage: action.payload.message,
             }
         default:
@@ -44,11 +44,11 @@ function reducer(state, action) {
 
 export default function TodoTable(props) {
     // const SERVER_URL = "http://localhost:8080" // Testing
-    const SERVER_URL = "https://doubtful-ox-button.cyclic.app/" // Production
+    const SERVER_URL = 'https://doubtful-ox-button.cyclic.app/' // Production
     const [state, dispatch] = useReducer(reducer, {
         showSnackbar: false,
-        alertSeverity: "info",
-        alertMessage: "DISPLAYING WARNING DUMMY TEXT!",
+        alertSeverity: 'info',
+        alertMessage: 'DISPLAYING WARNING DUMMY TEXT!',
     })
     const [loading, setLoading] = useState(true)
     const [todos, setTodos] = useState([]) // array of objects
@@ -80,125 +80,107 @@ export default function TodoTable(props) {
         updateLocalStorage()
     }, [todos])
 
-        let manageDispatcher = () => {
-                // TODO : Give it a better name.
-        }
+    let manageDispatcher = (severityLevel, messageToDisplay) => {
+        dispatch({
+            type: severityLevel,
+            payload: { message: messageToDisplay },
+        })
+    }
 
     let synchTodosWithServer = async () => {
         //Todo
         return true
     }
 
+    let uponConnectionErrorWithServer = async (err) => {
+        console.log('ENCOUNTERED ERROR WHILE CONNECTING TO SERVER :', err)
+        manageDispatcher('warning', 'Unable to connect to the database.')
+    }
+
     let getEverythingFromServer = async () => {
         try {
             let res = await fetch(`${SERVER_URL}/todos`)
             if (!res.ok) {
-                console.log(
-                    "Unable to get data on initial load.",
-                    res.statusText,
-                    res
-                )
-
-                dispatch({
-                    type: "warning",
-                    payload: {
-                        message:
-                            "Unable to connect to server. Using local storage for storing data.",
-                    },
-                })
+                console.log('Unable to get data on initial load.', res.statusText, res)
+                manageDispatcher('warning', 'Unable to connect to server. Using local storage for storing data.')
                 return []
             } else {
-                dispatch({
-                    type: "info",
-                    payload: { message: "Connected to server." },
-                })
+                manageDispatcher('success', 'Connected to the database.')
                 return await res.json()
             }
-        } catch (error) {
-            console.log("fetch failed", error)
-            dispatch({
-                type: "warning",
-                payload: { message: "Unable to connect to server" },
-            })
+        } catch (err) {
+            uponConnectionErrorWithServer(err)
+            return []
         }
     }
 
     let addItemToServer = async (itemObj) => {
         try {
             const res = await fetch(`${SERVER_URL}/todos`, {
-                headers: { "Content-Type": "application/json" },
-                method: "POST",
+                headers: { 'Content-Type': 'application/json' },
+                method: 'POST',
                 body: JSON.stringify(itemObj),
             })
             if (!res.ok) {
-                console.log(
-                    "Unable to add data to server.",
-                    res.statusText,
-                    res
-                )
+                console.log('Unable to add data to server.', res.statusText, res)
+                manageDispatcher()
             }
         } catch (err) {
-            console.log("POST fetch failed", err)
+            uponConnectionErrorWithServer(err)
         }
     }
 
     let deleteItemFromServer = async (itemUuid) => {
         try {
             const res = await fetch(`${SERVER_URL}/todos/${itemUuid}`, {
-                method: "POST",
+                method: 'POST',
             })
             if (!res.ok) {
-                console.log(
-                    "Unable to delete data from server.",
-                    res.statusText,
-                    res
-                )
+                console.log('Unable to delete data from server.', res.statusText, res)
             }
         } catch (err) {
-            console.log(err)
+            uponConnectionErrorWithServer(err)
         }
     }
 
     let deleteCompletedItemsFromServer = async () => {
-        const response = await fetch(SERVER_URL + "/deleteCompleted", {
-            method: "POST",
-        })
-        // Do error checking here. Was the response 200 or did it fail? todo
+        try {
+            const response = await fetch(SERVER_URL + '/deleteCompleted', {
+                method: 'POST',
+            })
+        } catch (err) {
+            uponConnectionErrorWithServer(err)
+        }
     }
 
     let editSingleItemInServer = async (newItemObj) => {
-        console.log(newItemObj)
-        console.log(newItemObj.uuid.toString())
-        const response = await fetch(SERVER_URL + "/todos/updateTodo", {
-            method: "POST",
-            body: JSON.stringify(newItemObj),
-            headers: {
-                "Content-Type": "application/json",
-            },
-        })
-        // Do error checking here. Was the response 200 or did it fail? todo
+        try {
+            const response = await fetch(SERVER_URL + '/todos/updateTodo', {
+                method: 'POST',
+                body: JSON.stringify(newItemObj),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+        } catch (err) {
+            uponConnectionErrorWithServer(err)
+        }
     }
 
-    let getItemsFromLocalStorage = () =>
-        JSON.parse(localStorage.getItem("current-todos"))
+    let getItemsFromLocalStorage = () => JSON.parse(localStorage.getItem('current-todos'))
 
-    let updateLocalStorage = () =>
-        localStorage.setItem("current-todos", JSON.stringify(todos))
+    let updateLocalStorage = () => localStorage.setItem('current-todos', JSON.stringify(todos))
 
     let removeTodo = (_, uuidToRemove) => {
         let newTodoList = todos.slice()
-        deleteItemFromServer(uuidToRemove).then(
-            "item with uuid",
-            uuidToRemove,
-            "removed."
-        )
+        deleteItemFromServer(uuidToRemove).then('item with uuid', uuidToRemove, 'removed.')
         newTodoList = newTodoList.filter((item) => item.uuid !== uuidToRemove)
         setTodos(newTodoList)
     }
 
     let appendTodo = (e, isChecked) => {
         let newTextValue = e.target.value.trim()
-        if (e.key === "Enter" && newTextValue.length) {
+        if (e.key === 'Enter' && newTextValue.length) {
             let newObj = {
                 uuid: uuidv4(),
                 todoText: newTextValue,
@@ -206,19 +188,17 @@ export default function TodoTable(props) {
                 isComplete: isChecked,
             }
             setTodos((prev) => prev.concat([newObj]))
-            addItemToServer(newObj).then(() =>
-                console.log("done adding to the server...")
-            )
-            e.target.value = ""
+            addItemToServer(newObj)
+            e.target.value = ''
         }
     }
 
     let handleFilter = (filterType) => {
         let filteredList = todos.slice()
         filteredList.map((item) => {
-            if (filterType.toLowerCase() === "all".toLowerCase()) {
+            if (filterType.toLowerCase() === 'all'.toLowerCase()) {
                 item.isHidden = false
-            } else if (filterType.toLowerCase() === "completed".toLowerCase()) {
+            } else if (filterType.toLowerCase() === 'completed'.toLowerCase()) {
                 item.isHidden = !item.isComplete
             } else {
                 item.isHidden = item.isComplete
@@ -230,9 +210,7 @@ export default function TodoTable(props) {
     let clearAllCompleted = () => {
         let listCopy = todos.slice()
         listCopy = listCopy.filter((item) => item.isComplete !== true)
-        deleteCompletedItemsFromServer().then(() =>
-            console.log("All completed items have been removed")
-        )
+        deleteCompletedItemsFromServer().then(() => console.log('All completed items have been removed'))
         setTodos(listCopy)
     }
 
@@ -259,47 +237,24 @@ export default function TodoTable(props) {
 
     return (
         <>
-            <Container maxWidth="sm" sx={{ marginTop: "50px" }}>
-                <Button
-                    onClick={() => {
-                        dispatch({
-                            type: "warning",
-                            payload: { message: "I am a message" },
-                        })
-                    }}
-                >
-                    {" "}
-                    switch loading status
-                </Button>
-                <Snackbar open={state.showSnackbar}>
-                    <Alert
-                        severity={state.alertSeverity}
-                        // ["error","info","success","warning"]
-                    >
-                        {state.alertMessage}
-                    </Alert>
+            <Container maxWidth='sm' sx={{ marginTop: '50px' }}>
+                <Snackbar open={state.showSnackbar} autoHideDuration={6000} onClose={() => manageDispatcher('close')}>
+                    <Alert severity={state.alertSeverity}>{state.alertMessage}</Alert>
                 </Snackbar>
-                <Stack direction="row" justifyContent="space-between">
-                    <Typography variant="h3" color="white">
+                <Stack direction='row' justifyContent='space-between'>
+                    <Typography variant='h3' color='white'>
                         TODO
                     </Typography>
                     <Button onClick={props.toggleDarkmode}>
-                        {props.isDarkmode ? (
-                            <Brightness3Icon />
-                        ) : (
-                            <LightModeIcon />
-                        )}
+                        {props.isDarkmode ? <Brightness3Icon /> : <LightModeIcon />}
                     </Button>
                 </Stack>
                 <TodCreator appendTodo={appendTodo} />
                 <Paper>
                     <DragDropContext onDragEnd={handleDrag}>
-                        <Droppable droppableId="list-container">
+                        <Droppable droppableId='list-container'>
                             {(provided) => (
-                                <div
-                                    {...provided.droppableProps}
-                                    ref={provided.innerRef}
-                                >
+                                <div {...provided.droppableProps} ref={provided.innerRef}>
                                     <TodoContainer
                                         todos={todos}
                                         handleDrag={handleDrag}
@@ -315,18 +270,9 @@ export default function TodoTable(props) {
                             )}
                         </Droppable>
                     </DragDropContext>
-                    <UtilityBar
-                        filterList={handleFilter}
-                        clearAllCompleted={clearAllCompleted}
-                        tally={tally}
-                    />
+                    <UtilityBar filterList={handleFilter} clearAllCompleted={clearAllCompleted} tally={tally} />
                 </Paper>
-                <Typography
-                    variant="subtitle2"
-                    textAlign="center"
-                    sx={{ marginTop: "40px" }}
-                    color="#999999"
-                >
+                <Typography variant='subtitle2' textAlign='center' sx={{ marginTop: '40px' }} color='#999999'>
                     Drag and drop to reorder list
                 </Typography>
             </Container>

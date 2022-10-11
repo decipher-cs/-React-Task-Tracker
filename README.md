@@ -2,7 +2,7 @@
 
 Your average todo app but with quite a few functionalities added to it.
 
-## Index
+## Table Of Content
 
 - [Acknowledgement](Acknowledgement)
 - [links](#links)
@@ -12,13 +12,14 @@ Your average todo app but with quite a few functionalities added to it.
 
 ### Acknowledgement
 
-* [Netlify]()
-* [PlanetScale]()
-* [Cyclic.sh]()
+* [Netlify](https://app.netlify.com/)
+* [PlanetScale](https://planetscale.com/)
+* [Cyclic.sh](https://www.cyclic.sh/)
 
 ### Links
 
 - [Live Website on Netlify](https://golden-liger-9ba371.netlify.app/)
+- [Backend GitLab Repo](https://gitlab.com/Decipher-CS/todo-app-backend-api)
 
 ### Tech used
 
@@ -28,7 +29,7 @@ Your average todo app but with quite a few functionalities added to it.
 - ExpressJS for routing
 - mySQL as database
 - PlanetScale for hosting mySQL database
-- Cyclic.sh for hosting backend
+- Cyclic for hosting backend
 
 ### TODO
 
@@ -37,11 +38,11 @@ Your average todo app but with quite a few functionalities added to it.
 - [ ] Add a check if theme and todo exist in the localstorage because if they don't, Page won't load unless refreshed. Look more into this.
 - [ ] Idea: put a switch on the header to use local storage or remote database according to user preference.
 - [x] Don't wait for database on initial load. Show a skeleton instead on the place of all the todo items.
-- [ ] Add a mui snackbar for when connection with database could not be established.
+- [x] Add a mui snackbar for when connection with database could not be established.
 - [ ] Add link to backend in readme and vice versa.
-- [ ] Put catch blocks on the fetch api throughout the code.
+- [x] Put catch blocks on the fetch api throughout the code.
 - [ ] Add pagination.
-- [ ] Setup corn on the backend.
+- [x] Setup corn on the backend.
 - [ ] Add function to sycn everything with server with a manual button press or with a snackbar prompt asking to do so on data inconsistency.
 
 ### Improvements I could have made
