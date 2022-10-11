@@ -54,7 +54,7 @@ export default function Tod({
                     py={0.5}
                     direction="row"
                     alignItems="center"
-                    // justifyContent="spece-between"
+                    // justifyContent="space-between"
                 >
                     <Checkbox
                         checked={isComplete}

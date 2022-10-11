@@ -1,18 +1,58 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useReducer } from "react"
 import TodCreator from "./TodCreator"
 import TodoContainer from "./TodoContainer"
 import { v4 as uuidv4 } from "uuid"
 import UtilityBar from "./UtilityBar"
 import { DragDropContext, Droppable } from "react-beautiful-dnd"
-import { Container, Paper, Stack, Typography, Button } from "@mui/material/"
+import {
+    Container,
+    Paper,
+    Stack,
+    Pagination,
+    Typography,
+    Button,
+    Snackbar,
+    Alert,
+} from "@mui/material/"
 import LightModeIcon from "@mui/icons-material/LightMode"
 import Brightness3Icon from "@mui/icons-material/Brightness3"
 
-export default function TodoTable(props) {
-    // const SERVER_URL = "http://localhost:8080/todos" // Testing
-    const SERVER_URL = "https://doubtful-ox-button.cyclic.app/" // Production
+function reducer(state, action) {
+    switch (action.type) {
+        case "warning":
+            return {
+                showSnackbar: !state.showSnackbar,
+                alertSeverity: "warning",
+                alertMessage: action.payload.message,
+            }
+        case "info":
+            return {
+                showSnackbar: !state.showSnackbar,
+                alertSeverity: "info",
+                alertMessage: action.payload.message,
+            }
+        case "success":
+            return {
+                showSnackbar: !state.showSnackbar,
+                alertSeverity: "success",
+                alertMessage: action.payload.message,
+            }
+        default:
+            throw new Error()
+    }
+}
 
+export default function TodoTable(props) {
+    // const SERVER_URL = "http://localhost:8080" // Testing
+    const SERVER_URL = "https://doubtful-ox-button.cyclic.app/" // Production
+    const [state, dispatch] = useReducer(reducer, {
+        showSnackbar: false,
+        alertSeverity: "info",
+        alertMessage: "DISPLAYING WARNING DUMMY TEXT!",
+    })
+    const [loading, setLoading] = useState(true)
     const [todos, setTodos] = useState([]) // array of objects
+
     const [tally, setTally] = useState({
         all: todos.length,
         active: 0,
@@ -20,7 +60,10 @@ export default function TodoTable(props) {
     })
 
     useEffect(() => {
-        getEverythingFromServer().then((res) => setTodos(res))
+        getEverythingFromServer().then((res) => {
+            setTodos(res)
+            setLoading(false)
+        })
     }, [])
 
     useEffect(() => {
@@ -37,27 +80,83 @@ export default function TodoTable(props) {
         updateLocalStorage()
     }, [todos])
 
+        let manageDispatcher = () => {
+                // TODO : Give it a better name.
+        }
+
+    let synchTodosWithServer = async () => {
+        //Todo
+        return true
+    }
+
     let getEverythingFromServer = async () => {
-        let res = await fetch(`${SERVER_URL}/todos`)
-        return (res = await res.json())
-        // Do error checking here. Was the response 200 or did it fail? todo
+        try {
+            let res = await fetch(`${SERVER_URL}/todos`)
+            if (!res.ok) {
+                console.log(
+                    "Unable to get data on initial load.",
+                    res.statusText,
+                    res
+                )
+
+                dispatch({
+                    type: "warning",
+                    payload: {
+                        message:
+                            "Unable to connect to server. Using local storage for storing data.",
+                    },
+                })
+                return []
+            } else {
+                dispatch({
+                    type: "info",
+                    payload: { message: "Connected to server." },
+                })
+                return await res.json()
+            }
+        } catch (error) {
+            console.log("fetch failed", error)
+            dispatch({
+                type: "warning",
+                payload: { message: "Unable to connect to server" },
+            })
+        }
     }
 
     let addItemToServer = async (itemObj) => {
-        console.log(itemObj)
-        const response = await fetch(`${SERVER_URL}/todos`, {
-            headers: { "Content-Type": "application/json" },
-            method: "POST",
-            body: JSON.stringify(itemObj),
-        })
-        // Do error checking here. Was the response 200 or did it fail? todo
+        try {
+            const res = await fetch(`${SERVER_URL}/todos`, {
+                headers: { "Content-Type": "application/json" },
+                method: "POST",
+                body: JSON.stringify(itemObj),
+            })
+            if (!res.ok) {
+                console.log(
+                    "Unable to add data to server.",
+                    res.statusText,
+                    res
+                )
+            }
+        } catch (err) {
+            console.log("POST fetch failed", err)
+        }
     }
 
     let deleteItemFromServer = async (itemUuid) => {
-        const response = await fetch(`${SERVER_URL}/${itemUuid}`, {
-            method: "POST",
-        })
-        // Do error checking here. Was the response 200 or did it fail? todo
+        try {
+            const res = await fetch(`${SERVER_URL}/todos/${itemUuid}`, {
+                method: "POST",
+            })
+            if (!res.ok) {
+                console.log(
+                    "Unable to delete data from server.",
+                    res.statusText,
+                    res
+                )
+            }
+        } catch (err) {
+            console.log(err)
+        }
     }
 
     let deleteCompletedItemsFromServer = async () => {
@@ -68,9 +167,14 @@ export default function TodoTable(props) {
     }
 
     let editSingleItemInServer = async (newItemObj) => {
-        const response = await fetch(`${SERVER_URL}/${newItemObj.uuid}`, {
+        console.log(newItemObj)
+        console.log(newItemObj.uuid.toString())
+        const response = await fetch(SERVER_URL + "/todos/updateTodo", {
             method: "POST",
             body: JSON.stringify(newItemObj),
+            headers: {
+                "Content-Type": "application/json",
+            },
         })
         // Do error checking here. Was the response 200 or did it fail? todo
     }
@@ -135,6 +239,7 @@ export default function TodoTable(props) {
     let toggleStrikeThroughBox = (_, index) => {
         let newTodoList = todos.slice()
         newTodoList[index].isComplete = !newTodoList[index].isComplete
+        editSingleItemInServer(newTodoList[index])
         setTodos(newTodoList)
     }
 
@@ -155,6 +260,25 @@ export default function TodoTable(props) {
     return (
         <>
             <Container maxWidth="sm" sx={{ marginTop: "50px" }}>
+                <Button
+                    onClick={() => {
+                        dispatch({
+                            type: "warning",
+                            payload: { message: "I am a message" },
+                        })
+                    }}
+                >
+                    {" "}
+                    switch loading status
+                </Button>
+                <Snackbar open={state.showSnackbar}>
+                    <Alert
+                        severity={state.alertSeverity}
+                        // ["error","info","success","warning"]
+                    >
+                        {state.alertMessage}
+                    </Alert>
+                </Snackbar>
                 <Stack direction="row" justifyContent="space-between">
                     <Typography variant="h3" color="white">
                         TODO
@@ -179,6 +303,7 @@ export default function TodoTable(props) {
                                     <TodoContainer
                                         todos={todos}
                                         handleDrag={handleDrag}
+                                        loading={loading}
                                         listFunctions={{
                                             removeTodo,
                                             toggleStrikeThroughBox,
