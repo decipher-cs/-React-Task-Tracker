@@ -1,6 +1,11 @@
 # TODO APP
 
-Your average todo app but with quite a few functionalities added to it.
+Your average todo app but with quite a few functionalities added to it, such as :
+
+- Pagination
+- Database to handle list items
+- Toast for a better user-system communication
+- Dark mode
 
 ## Table Of Content
 
@@ -42,8 +47,11 @@ Your average todo app but with quite a few functionalities added to it.
 - [ ] Add link to backend in readme and vice versa.
 - [x] Put catch blocks on the fetch api throughout the code.
 - [ ] Add pagination.
+  - [ ] Pagination shouldn't break filter system. Check if it does.
+  - [ ] Pagination should auto-switch to the previous page when last item on the current page is deleted.
 - [x] Setup corn on the backend.
 - [ ] Add function to sycn everything with server with a manual button press or with a snackbar prompt asking to do so on data inconsistency.
+- [ ] MySQL database is the same for every user.
 
 ### Improvements I could have made
 
