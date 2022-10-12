@@ -4,11 +4,10 @@ import TodoContainer from './TodoContainer'
 import { v4 as uuidv4 } from 'uuid'
 import UtilityBar from './UtilityBar'
 import { DragDropContext, Droppable } from 'react-beautiful-dnd'
-import { Container, Paper, Stack, Pagination, Typography, Button, Snackbar, Alert } from '@mui/material/'
 import LightModeIcon from '@mui/icons-material/LightMode'
+import { Container, Paper, Stack, Pagination, Typography, Button, Snackbar, Alert } from '@mui/material/'
 import Brightness3Icon from '@mui/icons-material/Brightness3'
 
-// ["error","info","success","warning"]
 function reducer(state, action) {
     switch (action.type) {
         case 'close':
@@ -48,16 +47,17 @@ export default function TodoTable(props) {
     const [state, dispatch] = useReducer(reducer, {
         showSnackbar: false,
         alertSeverity: 'info',
-        alertMessage: 'DISPLAYING WARNING DUMMY TEXT!',
+        alertMessage: 'Everything Alright',
     })
     const [loading, setLoading] = useState(true)
     const [todos, setTodos] = useState([]) // array of objects
-
     const [tally, setTally] = useState({
         all: todos.length,
         active: 0,
         completed: 0,
     })
+    const [paginationSize, setPaginationSize] = useState(10)
+    const [currPage, setCurrPage] = useState(1)
 
     useEffect(() => {
         getEverythingFromServer().then((res) => {
@@ -122,7 +122,6 @@ export default function TodoTable(props) {
                 body: JSON.stringify(itemObj),
             })
             if (!res.ok) {
-                console.log('Unable to add data to server.', res.statusText, res)
                 manageDispatcher()
             }
         } catch (err) {
@@ -136,7 +135,7 @@ export default function TodoTable(props) {
                 method: 'POST',
             })
             if (!res.ok) {
-                console.log('Unable to delete data from server.', res.statusText, res)
+                manageDispatcher('warning', 'Unable to connect to server. Using local storage for storing data.')
             }
         } catch (err) {
             uponConnectionErrorWithServer(err)
@@ -145,9 +144,12 @@ export default function TodoTable(props) {
 
     let deleteCompletedItemsFromServer = async () => {
         try {
-            const response = await fetch(SERVER_URL + '/deleteCompleted', {
+            const res = await fetch(SERVER_URL + '/deleteCompleted', {
                 method: 'POST',
             })
+            if (!res.ok) {
+                manageDispatcher('warning', 'Unable to connect to server. Using local storage for storing data.')
+            }
         } catch (err) {
             uponConnectionErrorWithServer(err)
         }
@@ -155,13 +157,16 @@ export default function TodoTable(props) {
 
     let editSingleItemInServer = async (newItemObj) => {
         try {
-            const response = await fetch(SERVER_URL + '/todos/updateTodo', {
+            const res = await fetch(SERVER_URL + '/todos/updateTodo', {
                 method: 'POST',
                 body: JSON.stringify(newItemObj),
                 headers: {
                     'Content-Type': 'application/json',
                 },
             })
+            if (!res.ok) {
+                manageDispatcher('warning', 'Unable to connect to server. Using local storage for storing data.')
+            }
         } catch (err) {
             uponConnectionErrorWithServer(err)
         }
@@ -222,9 +227,11 @@ export default function TodoTable(props) {
     }
 
     let changeTextValue = (index, newTextValue) => {
+        console.log(index, newTextValue)
         let newTodoList = todos.slice()
         newTodoList[index].todoText = newTextValue
         setTodos(newTodoList)
+        editSingleItemInServer(newTodoList[index])
     }
 
     let handleDrag = (e) => {
@@ -259,6 +266,8 @@ export default function TodoTable(props) {
                                         todos={todos}
                                         handleDrag={handleDrag}
                                         loading={loading}
+                                        currPage={currPage}
+                                        paginationSize={paginationSize}
                                         listFunctions={{
                                             removeTodo,
                                             toggleStrikeThroughBox,
@@ -270,7 +279,13 @@ export default function TodoTable(props) {
                             )}
                         </Droppable>
                     </DragDropContext>
-                    <UtilityBar filterList={handleFilter} clearAllCompleted={clearAllCompleted} tally={tally} />
+                    <UtilityBar
+                        filterList={handleFilter}
+                        clearAllCompleted={clearAllCompleted}
+                        tally={tally}
+                        setCurrPage={setCurrPage}
+                        paginationSize={paginationSize}
+                    />
                 </Paper>
                 <Typography variant='subtitle2' textAlign='center' sx={{ marginTop: '40px' }} color='#999999'>
                     Drag and drop to reorder list

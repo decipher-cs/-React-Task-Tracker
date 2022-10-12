@@ -1,20 +1,12 @@
-import {
-    Checkbox,
-    Input,
-    Container,
-    Stack,
-    Switch,
-    IconButton,
-    Typography,
-} from "@mui/material"
+import { Checkbox, Input, Container, Stack, Switch, IconButton, Typography } from '@mui/material'
 
-import { useState } from "react"
+import { useState } from 'react'
 
-import ModeEditOutlineSharpIcon from "@mui/icons-material/ModeEditOutlineSharp"
-import EditOffIcon from "@mui/icons-material/EditOff"
-import DeleteIcon from "@mui/icons-material/Delete"
-import CheckCircleIcon from "@mui/icons-material/CheckCircle"
-import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined"
+import ModeEditOutlineSharpIcon from '@mui/icons-material/ModeEditOutlineSharp'
+import EditOffIcon from '@mui/icons-material/EditOff'
+import DeleteIcon from '@mui/icons-material/Delete'
+import CheckCircleIcon from '@mui/icons-material/CheckCircle'
+import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined'
 
 export default function Tod({
     item: textValue,
@@ -31,7 +23,7 @@ export default function Tod({
     const makeBoxEditable = () => {
         if (isDisabled === false) {
             if (tempValue.length === 0) {
-                console.log("String cannot be empty.") //  THROW ERROR ON INPUT BOX
+                console.log('String cannot be empty.') //  THROW ERROR ON INPUT BOX
                 setInputInvalid(true)
                 return
             }
@@ -52,31 +44,25 @@ export default function Tod({
                 <Stack
                     px={2}
                     py={0.5}
-                    direction="row"
-                    alignItems="center"
+                    direction='row'
+                    alignItems='center'
                     // justifyContent="space-between"
                 >
                     <Checkbox
                         checked={isComplete}
                         icon={<CheckCircleOutlinedIcon />}
                         checkedIcon={<CheckCircleIcon />}
-                        onChange={(e) =>
-                            listFunctions.toggleStrikeThroughBox(e, index)
-                        }
+                        onChange={(e) => listFunctions.toggleStrikeThroughBox(e, index)}
                     />
                     <Container>
                         {isDisabled ? (
-                            <Typography
-                                className={isComplete ? "mark-item" : ""}
-                            >
-                                {textValue}
-                            </Typography>
+                            <Typography className={isComplete ? 'mark-item' : ''}>{textValue}</Typography>
                         ) : (
                             <Input
                                 defaultValue={textValue}
-                                placeholder="Item Cannot Be Empty"
+                                placeholder='Item Cannot Be Empty'
                                 error={isInputInvalid}
-                                margin="none"
+                                margin='none'
                                 required
                                 onChange={handleChange}
                             />
@@ -143,9 +129,7 @@ export default function Tod({
                         //     },
                         // }}
                     />
-                    <IconButton
-                        onClick={(e) => listFunctions.removeTodo(e, uuid)}
-                    >
+                    <IconButton onClick={(e) => listFunctions.removeTodo(e, uuid)}>
                         <DeleteIcon />
                     </IconButton>
                 </Stack>
