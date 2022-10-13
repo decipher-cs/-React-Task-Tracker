@@ -13,10 +13,7 @@ const UtilityBar = ({ filterList, clearAllCompleted, tally, setCurrPage, paginat
                         sx={{ marginInline: 'auto', marginBottom: '1.3em', marginTop: '0.4em' }}
                         size='medium'
                         defaultPage={1}
-                        onChange={(_, pageNum) => {
-                            setCurrPage(pageNum)
-                            console.log(pageNum)
-                        }}
+                        onChange={(_, pageNum) => setCurrPage(pageNum)}
                         variant='outlined'
                     />
                 )}

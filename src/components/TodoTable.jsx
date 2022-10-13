@@ -42,7 +42,7 @@ function reducer(state, action) {
 }
 
 export default function TodoTable(props) {
-    // const SERVER_URL = "http://localhost:8080" // Testing
+    // const SERVER_URL = 'http://localhost:8080' // Testing
     const SERVER_URL = 'https://doubtful-ox-button.cyclic.app/' // Production
     const [state, dispatch] = useReducer(reducer, {
         showSnackbar: false,
@@ -60,10 +60,11 @@ export default function TodoTable(props) {
     const [currPage, setCurrPage] = useState(1)
 
     useEffect(() => {
-        getEverythingFromServer().then((res) => {
-            setTodos(res)
-            setLoading(false)
-        })
+        if (!document.cookie) {
+            manageDispatcher('info', 'New user initiated.')
+            document.cookie = `user_Id=${uuidv4()}`
+        } else manageDispatcher('success', 'Welcome Back!')
+        getEverythingFromServer()
     }, [])
 
     useEffect(() => {
@@ -99,17 +100,19 @@ export default function TodoTable(props) {
 
     let getEverythingFromServer = async () => {
         try {
-            let res = await fetch(`${SERVER_URL}/todos`)
+            let res = await fetch(`${SERVER_URL}/todos`, { credentials: 'include' })
             if (!res.ok) {
-                console.log('Unable to get data on initial load.', res.statusText, res)
                 manageDispatcher('warning', 'Unable to connect to server. Using local storage for storing data.')
                 return []
             } else {
                 manageDispatcher('success', 'Connected to the database.')
-                return await res.json()
+                let finalRes = await res.json()
+                setTodos(finalRes)
+                setLoading(false)
             }
         } catch (err) {
             uponConnectionErrorWithServer(err)
+            setLoading(false) //TODO USE LOCAL STORAGE HERE
             return []
         }
     }
@@ -120,6 +123,7 @@ export default function TodoTable(props) {
                 headers: { 'Content-Type': 'application/json' },
                 method: 'POST',
                 body: JSON.stringify(itemObj),
+                credentials: 'include',
             })
             if (!res.ok) {
                 manageDispatcher()
@@ -131,9 +135,7 @@ export default function TodoTable(props) {
 
     let deleteItemFromServer = async (itemUuid) => {
         try {
-            const res = await fetch(`${SERVER_URL}/todos/${itemUuid}`, {
-                method: 'POST',
-            })
+            const res = await fetch(`${SERVER_URL}/todos/${itemUuid}`, { method: 'POST', credentials: 'include' })
             if (!res.ok) {
                 manageDispatcher('warning', 'Unable to connect to server. Using local storage for storing data.')
             }
@@ -144,11 +146,13 @@ export default function TodoTable(props) {
 
     let deleteCompletedItemsFromServer = async () => {
         try {
-            const res = await fetch(SERVER_URL + '/deleteCompleted', {
-                method: 'POST',
-            })
+            const res = await fetch(SERVER_URL + '/todos/removeCompleted', { method: 'POST', credentials: 'include' })
             if (!res.ok) {
-                manageDispatcher('warning', 'Unable to connect to server. Using local storage for storing data.')
+                manageDispatcher(
+                    'warning',
+                    'Unable to connect to server. Using local storage for storing data.',
+                    res.statusText
+                )
             }
         } catch (err) {
             uponConnectionErrorWithServer(err)
@@ -160,9 +164,8 @@ export default function TodoTable(props) {
             const res = await fetch(SERVER_URL + '/todos/updateTodo', {
                 method: 'POST',
                 body: JSON.stringify(newItemObj),
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
             })
             if (!res.ok) {
                 manageDispatcher('warning', 'Unable to connect to server. Using local storage for storing data.')
@@ -215,7 +218,7 @@ export default function TodoTable(props) {
     let clearAllCompleted = () => {
         let listCopy = todos.slice()
         listCopy = listCopy.filter((item) => item.isComplete !== true)
-        deleteCompletedItemsFromServer().then(() => console.log('All completed items have been removed'))
+        deleteCompletedItemsFromServer()
         setTodos(listCopy)
     }
 
@@ -227,7 +230,6 @@ export default function TodoTable(props) {
     }
 
     let changeTextValue = (index, newTextValue) => {
-        console.log(index, newTextValue)
         let newTodoList = todos.slice()
         newTodoList[index].todoText = newTextValue
         setTodos(newTodoList)

@@ -23,7 +23,7 @@ export default function Tod({
     const makeBoxEditable = () => {
         if (isDisabled === false) {
             if (tempValue.length === 0) {
-                console.log('String cannot be empty.') //  THROW ERROR ON INPUT BOX
+                console.log('String cannot be empty.') //  THROW ERROR ON INPUT BOX TODO
                 setInputInvalid(true)
                 return
             }
