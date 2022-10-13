@@ -51,7 +51,7 @@ Your average todo app but with quite a few functionalities added to it, such as 
   - [ ] Pagination should auto-switch to the previous page when last item on the current page is deleted.
 - [x] Setup corn on the backend.
 - [ ] Add function to sycn everything with server with a manual button press or with a snackbar prompt asking to do so on data inconsistency.
-- [ ] MySQL database is the same for every user.
+- [x] MySQL database is the same for every user. Implement different todo items for different useres.
 
 ### Improvements I could have made
 
