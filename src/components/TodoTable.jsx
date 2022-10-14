@@ -42,8 +42,8 @@ function reducer(state, action) {
 }
 
 export default function TodoTable(props) {
-    // const SERVER_URL = 'http://localhost:8080' // Testing
-    const SERVER_URL = 'https://doubtful-ox-button.cyclic.app/' // Production
+    const SERVER_URL = 'http://localhost:8080' // Testing
+    // const SERVER_URL = 'https://doubtful-ox-button.cyclic.app' // Production
     const [state, dispatch] = useReducer(reducer, {
         showSnackbar: false,
         alertSeverity: 'info',
@@ -60,10 +60,12 @@ export default function TodoTable(props) {
     const [currPage, setCurrPage] = useState(1)
 
     useEffect(() => {
+        // ManageCookie
         if (!document.cookie) {
             manageDispatcher('info', 'New user initiated.')
             document.cookie = `user_Id=${uuidv4()}`
         } else manageDispatcher('success', 'Welcome Back!')
+        // RetriveData
         getEverythingFromServer()
     }, [])
 
@@ -99,6 +101,7 @@ export default function TodoTable(props) {
     }
 
     let getEverythingFromServer = async () => {
+        let finalRes = []
         try {
             let res = await fetch(`${SERVER_URL}/todos`, { credentials: 'include' })
             if (!res.ok) {
@@ -106,14 +109,14 @@ export default function TodoTable(props) {
                 return []
             } else {
                 manageDispatcher('success', 'Connected to the database.')
-                let finalRes = await res.json()
-                setTodos(finalRes)
-                setLoading(false)
+                finalRes = await res.json()
             }
         } catch (err) {
-            uponConnectionErrorWithServer(err)
-            setLoading(false) //TODO USE LOCAL STORAGE HERE
+            uponConnectionErrorWithServer(err) //TODO USE LOCAL STORAGE HERE
             return []
+        } finally {
+            setTodos(finalRes)
+            setLoading(false)
         }
     }
 
@@ -247,6 +250,26 @@ export default function TodoTable(props) {
     return (
         <>
             <Container maxWidth='sm' sx={{ marginTop: '50px' }}>
+                <Button
+                    onClick={() => {
+                        let headers = new Headers()
+                        // TODO
+                        headers.append('Content-Type', 'application/json')
+                        headers.append('Accept', 'application/json')
+                        // headers.append('Authorization', 'Basic ' + base64.encode(username + ':' + password))
+
+                        fetch(SERVER_URL, {
+                            mode: 'cors',
+                            credentials: 'include',
+                            method: 'GET',
+                            headers: headers,
+                        })
+                            .then((res) => console.log('done', res.status))
+                            .catch((err) => console.log('bad', err))
+                    }}
+                >
+                    Press to send request
+                </Button>
                 <Snackbar open={state.showSnackbar} autoHideDuration={6000} onClose={() => manageDispatcher('close')}>
                     <Alert severity={state.alertSeverity}>{state.alertMessage}</Alert>
                 </Snackbar>
@@ -296,3 +319,16 @@ export default function TodoTable(props) {
         </>
     )
 }
+
+{/* <Button */}
+{/*     onClick={() => { */}
+{/*         fetch(SERVER_URL, { */}
+{/*             mode: 'cors', */}
+{/*             credentials: 'include', */}
+{/*         }) */}
+{/*             .then((res) => console.log('done', res.status)) */}
+{/*             .catch((err) => console.log('bad', err)) */}
+{/*     }} */}
+{/* > */}
+{/*     Press to send request */}
+{/* </Button> */}
