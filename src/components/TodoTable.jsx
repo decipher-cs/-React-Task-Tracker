@@ -42,8 +42,8 @@ function reducer(state, action) {
 }
 
 export default function TodoTable(props) {
-    const SERVER_URL = 'http://localhost:8080' // Testing
-    // const SERVER_URL = 'https://doubtful-ox-button.cyclic.app' // Production
+    // const SERVER_URL = 'http://localhost:8080' // Testing
+    const SERVER_URL = 'https://doubtful-ox-button.cyclic.app' // Production
     const [state, dispatch] = useReducer(reducer, {
         showSnackbar: false,
         alertSeverity: 'info',
