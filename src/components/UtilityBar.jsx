@@ -1,20 +1,20 @@
 import { Stack, ToggleButton, ToggleButtonGroup, Select, MenuItem, Button, Pagination } from '@mui/material/'
 import { useState } from 'react'
-const UtilityBar = ({ filterList, clearAllCompleted, tally, setCurrPage, paginationSize }) => {
+const UtilityBar = ({ filterList, clearAllCompleted, tally, currPage, setCurrPage, paginationSize }) => {
     const [filterType, setFilterType] = useState('all')
     const [selectValue, setSelectValue] = useState(1)
 
     return (
         <>
             <Stack direction='row' justifyContent='space-between' px={2} py={1} flexWrap='wrap'>
-                {tally.all == true && (
+                {tally.all > paginationSize && (
                     <Pagination
                         count={Math.ceil(tally.all / paginationSize)}
                         sx={{ marginInline: 'auto', marginBottom: '1.3em', marginTop: '0.4em' }}
                         size='medium'
                         defaultPage={1}
+                        page={currPage}
                         onChange={(_, pageNum) => setCurrPage(pageNum)}
-                        variant='outlined'
                     />
                 )}
                 <div style={{ flexBasis: '100%', width: '0px' }}></div>

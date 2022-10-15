@@ -40,18 +40,19 @@ Your average todo app but with quite a few functionalities added to it, such as 
 
 - [x] Adjust margins for top heading.
 - [x] Add a backend to store the todo data
-- [ ] Add a check if theme and todo exist in the localstorage because if they don't, Page won't load unless refreshed. Look more into this.
+- [x] Add a check if theme and todo exist in the localstorage because if they don't, Page won't load unless refreshed. Look more into this.
 - [ ] Idea: put a switch on the header to use local storage or remote database according to user preference.
 - [x] Don't wait for database on initial load. Show a skeleton instead on the place of all the todo items.
 - [x] Add a mui snackbar for when connection with database could not be established.
-- [ ] Add link to backend in readme and vice versa.
+- [x] Add link to backend in readme and vice versa.
 - [x] Put catch blocks on the fetch api throughout the code.
 - [ ] Add pagination.
   - [ ] Pagination shouldn't break filter system. Check if it does.
-  - [ ] Pagination should auto-switch to the previous page when last item on the current page is deleted.
+  - [x] Pagination should auto-switch to the previous page when last item on the current page is deleted.
 - [x] Setup corn on the backend.
 - [ ] Add function to sycn everything with server with a manual button press or with a snackbar prompt asking to do so on data inconsistency.
 - [x] MySQL database is the same for every user. Implement different todo items for different useres.
+- [ ] Add time and data to the last time a user accessed the server and delete data if user hasn't accessed anything in over X time.
 
 ### Improvements I could have made
 

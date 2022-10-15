@@ -44,29 +44,30 @@ function reducer(state, action) {
 export default function TodoTable(props) {
     // const SERVER_URL = 'http://localhost:8080' // Testing
     const SERVER_URL = 'https://doubtful-ox-button.cyclic.app' // Production
-    const [state, dispatch] = useReducer(reducer, {
-        showSnackbar: false,
-        alertSeverity: 'info',
-        alertMessage: 'Everything Alright',
-    })
     const [userId, setUserId] = useState(localStorage.getItem('userId'))
     const [loading, setLoading] = useState(true)
-    const [todos, setTodos] = useState([]) // array of objects
+    const [todos, setTodos] = useState([])
+    const [paginationSize, setPaginationSize] = useState(10)
+    const [currPage, setCurrPage] = useState(1)
     const [tally, setTally] = useState({
         all: todos.length,
         active: 0,
         completed: 0,
     })
-    const [paginationSize, setPaginationSize] = useState(10)
-    const [currPage, setCurrPage] = useState(1)
+    const [state, dispatch] = useReducer(reducer, {
+        showSnackbar: false,
+        alertSeverity: 'info',
+        alertMessage: 'Everything Alright',
+    })
 
     useEffect(() => {
+        let id
         if (!userId) {
-            let id = uuidv4()
+            id = uuidv4()
             setUserId(id)
             localStorage.setItem('userId', id)
         }
-        getEverythingFromServer(userId)
+        getEverythingFromServer(userId || id)
     }, [])
 
     useEffect(() => {
@@ -193,6 +194,7 @@ export default function TodoTable(props) {
         deleteItemFromServer(uuidToRemove).then('item with uuid', uuidToRemove, 'removed.')
         newTodoList = newTodoList.filter((item) => item.uuid !== uuidToRemove)
         setTodos(newTodoList)
+        if ((tally.all - 1) % paginationSize == 0 && currPage != 1) setCurrPage((prev) => prev - 1)
     }
 
     let appendTodo = (e, isChecked) => {
@@ -294,6 +296,7 @@ export default function TodoTable(props) {
                         filterList={handleFilter}
                         clearAllCompleted={clearAllCompleted}
                         tally={tally}
+                        currPage={currPage}
                         setCurrPage={setCurrPage}
                         paginationSize={paginationSize}
                     />
