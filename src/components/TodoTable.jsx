@@ -49,6 +49,7 @@ export default function TodoTable(props) {
         alertSeverity: 'info',
         alertMessage: 'Everything Alright',
     })
+    const [userId, setUserId] = useState(localStorage.getItem('userId'))
     const [loading, setLoading] = useState(true)
     const [todos, setTodos] = useState([]) // array of objects
     const [tally, setTally] = useState({
@@ -60,13 +61,12 @@ export default function TodoTable(props) {
     const [currPage, setCurrPage] = useState(1)
 
     useEffect(() => {
-        // ManageCookie
-        if (!document.cookie) {
-            manageDispatcher('info', 'New user initiated.')
-            document.cookie = `user_Id=${uuidv4()}`
-        } else manageDispatcher('success', 'Welcome Back!')
-        // RetriveData
-        getEverythingFromServer()
+        if (!userId) {
+            let id = uuidv4()
+            setUserId(id)
+            localStorage.setItem('userId', id)
+        }
+        getEverythingFromServer(userId)
     }, [])
 
     useEffect(() => {
@@ -100,10 +100,10 @@ export default function TodoTable(props) {
         manageDispatcher('warning', 'Unable to connect to the database.')
     }
 
-    let getEverythingFromServer = async () => {
+    let getEverythingFromServer = async (userId) => {
         let finalRes = []
         try {
-            let res = await fetch(`${SERVER_URL}/todos`, { credentials: 'include' })
+            let res = await fetch(`${SERVER_URL}/todos/${userId}`)
             if (!res.ok) {
                 manageDispatcher('warning', 'Unable to connect to server. Using local storage for storing data.')
                 return []
@@ -125,8 +125,7 @@ export default function TodoTable(props) {
             const res = await fetch(`${SERVER_URL}/todos`, {
                 headers: { 'Content-Type': 'application/json' },
                 method: 'POST',
-                body: JSON.stringify(itemObj),
-                credentials: 'include',
+                body: JSON.stringify({ ...itemObj, userId }),
             })
             if (!res.ok) {
                 manageDispatcher()
@@ -138,7 +137,11 @@ export default function TodoTable(props) {
 
     let deleteItemFromServer = async (itemUuid) => {
         try {
-            const res = await fetch(`${SERVER_URL}/todos/${itemUuid}`, { method: 'POST', credentials: 'include' })
+            const res = await fetch(`${SERVER_URL}/todos/${itemUuid}`, {
+                headers: { 'Content-Type': 'application/json' },
+                method: 'POST',
+                body: JSON.stringify({ userId }),
+            })
             if (!res.ok) {
                 manageDispatcher('warning', 'Unable to connect to server. Using local storage for storing data.')
             }
@@ -149,7 +152,11 @@ export default function TodoTable(props) {
 
     let deleteCompletedItemsFromServer = async () => {
         try {
-            const res = await fetch(SERVER_URL + '/todos/removeCompleted', { method: 'POST', credentials: 'include' })
+            const res = await fetch(SERVER_URL + '/todos/removeCompleted', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId }),
+            })
             if (!res.ok) {
                 manageDispatcher(
                     'warning',
@@ -166,9 +173,8 @@ export default function TodoTable(props) {
         try {
             const res = await fetch(SERVER_URL + '/todos/updateTodo', {
                 method: 'POST',
-                body: JSON.stringify(newItemObj),
+                body: JSON.stringify({ ...newItemObj, userId }),
                 headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
             })
             if (!res.ok) {
                 manageDispatcher('warning', 'Unable to connect to server. Using local storage for storing data.')
@@ -250,26 +256,6 @@ export default function TodoTable(props) {
     return (
         <>
             <Container maxWidth='sm' sx={{ marginTop: '50px' }}>
-                <Button
-                    onClick={() => {
-                        let headers = new Headers()
-                        // TODO
-                        headers.append('Content-Type', 'application/json')
-                        headers.append('Accept', 'application/json')
-                        // headers.append('Authorization', 'Basic ' + base64.encode(username + ':' + password))
-
-                        fetch(SERVER_URL, {
-                            mode: 'cors',
-                            credentials: 'include',
-                            method: 'GET',
-                            headers: headers,
-                        })
-                            .then((res) => console.log('done', res.status))
-                            .catch((err) => console.log('bad', err))
-                    }}
-                >
-                    Press to send request
-                </Button>
                 <Snackbar open={state.showSnackbar} autoHideDuration={6000} onClose={() => manageDispatcher('close')}>
                     <Alert severity={state.alertSeverity}>{state.alertMessage}</Alert>
                 </Snackbar>
@@ -319,16 +305,3 @@ export default function TodoTable(props) {
         </>
     )
 }
-
-{/* <Button */}
-{/*     onClick={() => { */}
-{/*         fetch(SERVER_URL, { */}
-{/*             mode: 'cors', */}
-{/*             credentials: 'include', */}
-{/*         }) */}
-{/*             .then((res) => console.log('done', res.status)) */}
-{/*             .catch((err) => console.log('bad', err)) */}
-{/*     }} */}
-{/* > */}
-{/*     Press to send request */}
-{/* </Button> */}
