@@ -7,9 +7,9 @@ const UtilityBar = ({ filterList, clearAllCompleted, tally, currPage, setCurrPag
     return (
         <>
             <Stack direction='row' justifyContent='space-between' px={2} py={1} flexWrap='wrap'>
-                {tally.all > paginationSize && (
+                {tally[filterType] > paginationSize && (
                     <Pagination
-                        count={Math.ceil(tally.all / paginationSize)}
+                        count={Math.ceil(tally[filterType] / paginationSize)}
                         sx={{ marginInline: 'auto', marginBottom: '1.3em', marginTop: '0.4em' }}
                         size='medium'
                         defaultPage={1}

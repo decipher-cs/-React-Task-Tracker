@@ -54,6 +54,7 @@ export default function TodoTable(props) {
         active: 0,
         completed: 0,
     })
+
     const [state, dispatch] = useReducer(reducer, {
         showSnackbar: false,
         alertSeverity: 'info',
@@ -82,6 +83,7 @@ export default function TodoTable(props) {
         })
         setTally(tempObj)
         updateLocalStorage()
+        setCurrPage(1)
     }, [todos])
 
     let manageDispatcher = (severityLevel, messageToDisplay) => {

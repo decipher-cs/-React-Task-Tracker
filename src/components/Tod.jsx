@@ -1,4 +1,5 @@
 import { Checkbox, Input, Container, Stack, Switch, IconButton, Typography } from '@mui/material'
+import Divider from '@mui/material/Divider'
 
 import { useState } from 'react'
 
@@ -134,6 +135,7 @@ export default function Tod({
                     </IconButton>
                 </Stack>
             )}
+            {isHidden || <Divider />}
         </>
     )
 }
