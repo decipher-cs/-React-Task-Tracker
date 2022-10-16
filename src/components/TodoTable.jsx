@@ -259,7 +259,7 @@ export default function TodoTable(props) {
 
     return (
         <>
-            <Container maxWidth='sm' sx={{ marginTop: '50px' }}>
+            <Container maxWidth='sm' sx={{ marginTop: '50px' }}  className={props.className} style={props.style}>
                 <Snackbar open={state.showSnackbar} autoHideDuration={6000} onClose={() => manageDispatcher('close')}>
                     <Alert severity={state.alertSeverity}>{state.alertMessage}</Alert>
                 </Snackbar>

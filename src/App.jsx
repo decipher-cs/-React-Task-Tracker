@@ -46,15 +46,25 @@ function App() {
         <>
             <ThemeProvider theme={isDarkmode ? darkTheme : lightTheme}>
                 <CssBaseline>
-                    <div style={{ display: 'flow-root' }}>
-                        <div className='bg-img-main-container'>
-                            {isSizeDesktop ? (
-                                <Wallpaper bg={isDarkmode ? bgDesktopDark : bgDesktopLight} />
-                            ) : (
-                                <Wallpaper bg={isDarkmode ? bgMobileDark : bgMobileLight} />
-                            )}
-                        </div>
-                        <TodoTable toggleDarkmode={() => setDarkMode((prev) => !prev)} isDarkmode={isDarkmode} />
+                    <div
+                        className='todo-body-container'
+                        style={{
+                            backgroundImage: `url(${
+                                isSizeDesktop
+                                    ? isDarkmode
+                                        ? bgDesktopDark
+                                        : bgDesktopLight
+                                    : isDarkmode
+                                    ? bgDesktopDark
+                                    : bgDesktopLight
+                            })`,
+                        }}
+                    >
+                        <TodoTable
+                            className='todo-body'
+                            toggleDarkmode={() => setDarkMode((prev) => !prev)}
+                            isDarkmode={isDarkmode}
+                        />
                     </div>
                 </CssBaseline>
             </ThemeProvider>

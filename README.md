@@ -46,13 +46,14 @@ Your average todo app but with quite a few functionalities added to it, such as 
 - [x] Add a mui snackbar for when connection with database could not be established.
 - [x] Add link to backend in readme and vice versa.
 - [x] Put catch blocks on the fetch api throughout the code.
-- [ ] Add pagination.
-  - [ ] Pagination shouldn't break filter system. Check if it does.
+- [x] Add pagination.
+  - [x] Pagination shouldn't break filter system. Check if it does.
   - [x] Pagination should auto-switch to the previous page when last item on the current page is deleted.
 - [x] Setup corn on the backend.
 - [ ] Add function to sycn everything with server with a manual button press or with a snackbar prompt asking to do so on data inconsistency.
 - [x] MySQL database is the same for every user. Implement different todo items for different useres.
 - [ ] Add time and data to the last time a user accessed the server and delete data if user hasn't accessed anything in over X time.
+- [ ] If connecting to server fails, try after set time.
 
 ### Improvements I could have made
 

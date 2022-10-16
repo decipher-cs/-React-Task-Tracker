@@ -5,20 +5,17 @@
 svg {
     cursor: pointer;
 }
-.bg-img-main-container {
-    position: absolute;
-    top: 0px;
-    z-index: -1;
-    /* margin-top: 100px; */
-}
-.test {
-    font-size: 80px;
-    padding-top: 100px;
-}
 
-/* for the image */
-.bg-img-main {
+.todo-body-container {
     display: inline-block;
-    z-index: -99;
-    /* position: absolute; */
+    background-repeat: no-repeat;
+    position: relative;
+    background-size: cover;
+    height: 40vh;
+    min-width: 100vw;
+}
+.todo-body {
+    position: absolute;
+    top: 20px;
+    inset-inline: 0px;
 }
