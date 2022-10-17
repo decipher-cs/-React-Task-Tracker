@@ -43,6 +43,7 @@ function reducer(state, action) {
 
 export default function TodoTable(props) {
     // const SERVER_URL = 'http://localhost:8080' // Testing
+    let retryCount = 1
     const SERVER_URL = 'https://doubtful-ox-button.cyclic.app' // Production
     const [userId, setUserId] = useState(localStorage.getItem('userId'))
     const [loading, setLoading] = useState(true)
@@ -97,6 +98,19 @@ export default function TodoTable(props) {
         return true
     }
 
+    let retryConnectionAttempt = (failedFunction, data) => {
+        // TODO stop after x amount of attempts otherwise this can caus
+        if (retryCount >= 5) {
+            retryCount = 0
+            return
+        }
+        ++retryCount
+        setTimeout(() => {
+            // failedFunction(data)
+            console.log(retryCount)
+        }, 1000 * retryCount * 2)
+    }
+retryConnectionAttempt(()=>{}, 'dfa')
     let uponConnectionErrorWithServer = async (err) => {
         console.log('ENCOUNTERED ERROR WHILE CONNECTING TO SERVER :', err)
         manageDispatcher('warning', 'Unable to connect to the database.')
@@ -114,6 +128,7 @@ export default function TodoTable(props) {
                 finalRes = await res.json()
             }
         } catch (err) {
+            retryConnectionAttempt(getEverythingFromServer, userId)
             uponConnectionErrorWithServer(err) //TODO USE LOCAL STORAGE HERE
             return []
         } finally {
