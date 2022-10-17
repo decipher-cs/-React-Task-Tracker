@@ -54,6 +54,7 @@ Your average todo app but with quite a few functionalities added to it, such as 
 - [x] MySQL database is the same for every user. Implement different todo items for different useres.
 - [ ] Add time and data to the last time a user accessed the server and delete data if user hasn't accessed anything in over X time.
 - [ ] If connecting to server fails, try after set time.
+- [ ] Fix bug encountered when item text length exceeds a certain characters.
 
 ### Improvements I could have made
 

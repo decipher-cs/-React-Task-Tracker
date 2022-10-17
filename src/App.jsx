@@ -16,7 +16,6 @@ const commonTheme = {
         fontFamily: ['Josefin Sans', 'sans-serif'].join(','),
     },
 }
-
 const darkTheme = createTheme({
     ...commonTheme,
     palette: {
