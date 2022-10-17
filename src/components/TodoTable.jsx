@@ -47,7 +47,7 @@ export default function TodoTable(props) {
     const [userId, setUserId] = useState(localStorage.getItem('userId'))
     const [loading, setLoading] = useState(true)
     const [todos, setTodos] = useState([])
-    const [paginationSize, setPaginationSize] = useState(10)
+    const [paginationSize, setPaginationSize] = useState(5)
     const [currPage, setCurrPage] = useState(1)
     const [tally, setTally] = useState({
         all: todos.length,
@@ -83,7 +83,6 @@ export default function TodoTable(props) {
         })
         setTally(tempObj)
         updateLocalStorage()
-        setCurrPage(1)
     }, [todos])
 
     let manageDispatcher = (severityLevel, messageToDisplay) => {
@@ -259,7 +258,7 @@ export default function TodoTable(props) {
 
     return (
         <>
-            <Container maxWidth='sm' sx={{ marginTop: '50px' }}  className={props.className} style={props.style}>
+            <Container maxWidth='sm' sx={{ marginTop: '50px' }} className={props.className} style={props.style}>
                 <Snackbar open={state.showSnackbar} autoHideDuration={6000} onClose={() => manageDispatcher('close')}>
                     <Alert severity={state.alertSeverity}>{state.alertMessage}</Alert>
                 </Snackbar>
@@ -272,7 +271,7 @@ export default function TodoTable(props) {
                     </Button>
                 </Stack>
                 <TodCreator appendTodo={appendTodo} />
-                <Paper>
+                <Paper sx={{ borderBottomLeftRadius: '0px', borderBottomRightRadius: '0px' }}>
                     <DragDropContext onDragEnd={handleDrag}>
                         <Droppable droppableId='list-container'>
                             {(provided) => (
@@ -294,15 +293,15 @@ export default function TodoTable(props) {
                             )}
                         </Droppable>
                     </DragDropContext>
-                    <UtilityBar
-                        filterList={handleFilter}
-                        clearAllCompleted={clearAllCompleted}
-                        tally={tally}
-                        currPage={currPage}
-                        setCurrPage={setCurrPage}
-                        paginationSize={paginationSize}
-                    />
                 </Paper>
+                <UtilityBar
+                    filterList={handleFilter}
+                    clearAllCompleted={clearAllCompleted}
+                    tally={tally}
+                    currPage={currPage}
+                    setCurrPage={setCurrPage}
+                    paginationSize={paginationSize}
+                />
                 <Typography variant='subtitle2' textAlign='center' sx={{ marginTop: '40px' }} color='#999999'>
                     Drag and drop to reorder list
                 </Typography>
