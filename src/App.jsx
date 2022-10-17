@@ -39,7 +39,7 @@ const lightTheme = createTheme({
 })
 
 function App() {
-    const isSizeDesktop = useMediaQuery('(min-width:390px)')
+    const isSizeDesktop = useMediaQuery('(min-width:400px)')
     const [isDarkmode, setDarkMode] = useState(true)
     const Wallpaper = ({ bg }) => <img src={bg} className='bg-img-main' style={{ minWidth: '100vw' }} />
 
@@ -63,8 +63,8 @@ function App() {
                                         ? bgDesktopDark
                                         : bgDesktopLight
                                     : isDarkmode
-                                    ? bgDesktopDark
-                                    : bgDesktopLight
+                                    ? bgMobileDark
+                                    : bgMobileLight
                             })`,
                         }}
                     >
