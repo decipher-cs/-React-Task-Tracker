@@ -9,7 +9,8 @@ Your average todo app but with quite a few functionalities added to it, such as 
 
 ## Table Of Content
 
-- [Acknowledgement](Acknowledgement)
+- [Acknowledgement](#Acknowledgement)
+- [Dependency Diagram](#Dependency-Diagram)
 - [Links](#links)
 - [Tech used](#Tech-used)
 - [Todo](#todo)
@@ -21,6 +22,10 @@ Your average todo app but with quite a few functionalities added to it, such as 
 * [Netlify](https://app.netlify.com/)
 * [PlanetScale](https://planetscale.com/)
 * [Cyclic.sh](https://www.cyclic.sh/)
+
+### Dependency Diagram
+
+![Dependency Diagram Of Components](https://gitlab.com/Decipher-CS/react-todo-app/-/blob/main/public/app-dependency-diagram.png?raw=true)
 
 ### Links
 
