@@ -262,12 +262,16 @@ export default function TodoTable(props) {
                 <Snackbar open={state.showSnackbar} autoHideDuration={6000} onClose={() => manageDispatcher('close')}>
                     <Alert severity={state.alertSeverity}>{state.alertMessage}</Alert>
                 </Snackbar>
-                <Stack direction='row' justifyContent='space-between'>
+                <Stack direction='row' justifyContent='space-between' px={1.4}>
                     <Typography variant='h3' color='white'>
                         TODO
                     </Typography>
                     <Button onClick={props.toggleDarkmode}>
-                        {props.isDarkmode ? <Brightness3Icon /> : <LightModeIcon />}
+                        {props.isDarkmode ? (
+                            <Brightness3Icon sx={{ color: 'white' }} />
+                        ) : (
+                            <LightModeIcon sx={{ color: 'white' }} />
+                        )}
                     </Button>
                 </Stack>
                 <TodCreator appendTodo={appendTodo} />

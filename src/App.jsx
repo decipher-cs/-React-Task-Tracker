@@ -11,21 +11,30 @@ import bgMobileLight from './assets/bg-mobile-light.jpg'
 import { useEffect, useState } from 'react'
 import CssBaseline from '@mui/material/CssBaseline'
 
+import { grey } from '@mui/material/colors/'
+
 const commonTheme = {
     typography: {
         fontFamily: ['Josefin Sans', 'sans-serif'].join(','),
     },
+    palette: {},
 }
 const darkTheme = createTheme({
     ...commonTheme,
     palette: {
         mode: 'dark',
+        primary: {
+            main: grey[50],
+        },
     },
 })
 const lightTheme = createTheme({
     ...commonTheme,
     palette: {
         mode: 'light',
+        primary: {
+            main: grey[800],
+        },
     },
 })
 

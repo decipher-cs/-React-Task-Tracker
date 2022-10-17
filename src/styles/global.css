@@ -11,7 +11,7 @@ svg {
     background-repeat: no-repeat;
     position: relative;
     background-size: cover;
-    height: 40vh;
+    height: min(40vh, 300px);
     min-width: 100vw;
 }
 .todo-body {

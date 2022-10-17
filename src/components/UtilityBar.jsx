@@ -78,7 +78,7 @@ const UtilityBar = ({ filterList, clearAllCompleted, tally, currPage, setCurrPag
                     <div style={{ flexBasis: '100%', width: '0px' }}></div>
                     {summaryBoard()}
                     {isScreenSizeBig && filterBar()}
-                    <Button size='small' onClick={clearAllCompleted}>
+                    <Button size='small' onClick={clearAllCompleted} >
                         clear completed
                     </Button>
                 </Stack>

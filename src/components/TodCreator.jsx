@@ -22,8 +22,6 @@ export default function TodCreator({ appendTodo }) {
                 <TextField
                     placeholder='Enter Item Here...'
                     size='small'
-                    // fullWidth
-                    // disableUnderline
                     variant='standard'
                     margin='dense'
                     onKeyDown={(e) => appendTodo(e, isChecked)}

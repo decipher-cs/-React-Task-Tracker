@@ -10,10 +10,11 @@ Your average todo app but with quite a few functionalities added to it, such as 
 ## Table Of Content
 
 - [Acknowledgement](Acknowledgement)
-- [links](#links)
-- [tech used](#Tech-used)
+- [Links](#links)
+- [Tech used](#Tech-used)
 - [Todo](#todo)
-
+- [Improvements I could have made](#Improvements-I-could-have-made)
+- [Known unfixable issues](#Known-unfixable-issues)
 
 ### Acknowledgement
 
@@ -62,3 +63,9 @@ Could have :
 
 - Used useReducer for updating, deleting, adding the todos.
 - Used context API to manage props.
+
+### Known unfixable issues
+
+Issues that have come to my attention but will not be fixed for one reason or another.
+
+- The list order will change on refresh due to the database having its own sequence of items.
