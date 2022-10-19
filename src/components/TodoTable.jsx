@@ -21,6 +21,7 @@ import Brightness3Icon from '@mui/icons-material/Brightness3'
 import CloseIcon from '@mui/icons-material/Close'
 import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest'
 import GitHubIcon from '@mui/icons-material/GitHub'
+import CloudSyncIcon from '@mui/icons-material/CloudSync'
 
 function reducer(state, action) {
     switch (action.type) {
@@ -63,7 +64,7 @@ export default function TodoTable(props) {
     const retryCountRef = useRef(1)
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [userId, setUserId] = useState(localStorage.getItem('userId'))
-    const [isPreferredStorageLocalStorage, setIsPreferredStorageLocalStorage] = useState(false)
+    const [useRemoteStorage, setUseRemoteStorage] = useState(true)
     const [loading, setLoading] = useState(true)
     const [todos, setTodos] = useState([])
     const [paginationSize, setPaginationSize] = useState(5)
@@ -87,7 +88,7 @@ export default function TodoTable(props) {
             setUserId(id)
             getItemFromLocalStorage(('userId', id))
         }
-        getEverythingFromServer(userId || id)
+        useRemoteStorage && getEverythingFromServer(userId || id)
     }, [])
 
     useEffect(() => {
@@ -115,10 +116,7 @@ export default function TodoTable(props) {
         })
     }
 
-    let synchTodosWithServer = async () => {
-        //Todo
-        return true
-    }
+    let synchTodosWithServer = async () => todos.slice().forEach((item) => editSingleItemInServer(item))
 
     let retryConnectionAttempt = (failedFunction, data) => {
         if (retryCountRef.current > MAX_TRIES) {
@@ -130,6 +128,7 @@ export default function TodoTable(props) {
             failedFunction(data)
         }, 1000 * 2 * retryCountRef.current)
     }
+
     let uponConnectionErrorWithServer = async (err) => {
         console.log('ENCOUNTERED ERROR WHILE CONNECTING TO SERVER :', err)
         manageDispatcher('warning', 'Unable to connect to the database.')
@@ -223,9 +222,10 @@ export default function TodoTable(props) {
 
     let removeTodo = (_, uuidToRemove) => {
         let newTodoList = todos.slice()
-        deleteItemFromServer(uuidToRemove).then('item with uuid', uuidToRemove, 'removed.')
+        useRemoteStorage && deleteItemFromServer(uuidToRemove)
         newTodoList = newTodoList.filter((item) => item.uuid !== uuidToRemove)
         setTodos(newTodoList)
+        updateLocalStorage('current-todos', newTodoList)
         if ((tally.all - 1) % paginationSize == 0 && currPage != 1) setCurrPage((prev) => prev - 1)
     }
 
@@ -239,7 +239,8 @@ export default function TodoTable(props) {
                 isComplete: isChecked,
             }
             setTodos((prev) => prev.concat([newObj]))
-            addItemToServer(newObj)
+            useRemoteStorage && addItemToServer(newObj)
+            updateLocalStorage('current-todos', todos.slice().concat([newObj]))
             e.target.value = ''
         }
     }
@@ -254,29 +255,34 @@ export default function TodoTable(props) {
             } else {
                 item.isHidden = item.isComplete
             }
-            setTodos(filteredList)
         })
+        setTodos(filteredList)
+        // useRemoteStorage && editSingleItemInServer([index]) //  There is a good chance we don't want to update the database upon filtering the list
+        updateLocalStorage('current-todos', filteredList)
     }
 
     let clearAllCompleted = () => {
         let listCopy = todos.slice()
         listCopy = listCopy.filter((item) => item.isComplete !== true)
-        deleteCompletedItemsFromServer()
+        useRemoteStorage && deleteCompletedItemsFromServer()
         setTodos(listCopy)
+        updateLocalStorage('current-todos', listCopy)
     }
 
     let toggleStrikeThroughBox = (_, index) => {
         let newTodoList = todos.slice()
         newTodoList[index].isComplete = !newTodoList[index].isComplete
-        editSingleItemInServer(newTodoList[index])
+        useRemoteStorage && editSingleItemInServer(newTodoList[index])
         setTodos(newTodoList)
+        updateLocalStorage('current-todos', newTodoList)
     }
 
     let changeTextValue = (index, newTextValue) => {
         let newTodoList = todos.slice()
         newTodoList[index].todoText = newTextValue
         setTodos(newTodoList)
-        editSingleItemInServer(newTodoList[index])
+        useRemoteStorage && editSingleItemInServer(newTodoList[index])
+        updateLocalStorage('current-todos', newTodoList)
     }
 
     let handleDrag = (e) => {
@@ -296,7 +302,7 @@ export default function TodoTable(props) {
                 <Typography p={1}> Settings </Typography>
             </Dialog>
             <Container maxWidth='sm' sx={{ marginTop: '50px' }} className={props.className} style={props.style}>
-                <Snackbar open={state.showSnackbar} autoHideDuration={6000} onClose={() => manageDispatcher('close')}>
+                <Snackbar open={state.showSnackbar} autoHideDuration={4000} onClose={() => manageDispatcher('close')}>
                     <Alert severity={state.alertSeverity}>{state.alertMessage}</Alert>
                 </Snackbar>
                 <Stack direction='row' justifyContent='space-between' px={1.4}>
@@ -304,8 +310,10 @@ export default function TodoTable(props) {
                         TODO
                     </Typography>
                     <ButtonGroup variant='text'>
-
-                        <Button onClick={()=>window.open('https://gitlab.com/Decipher-CS/react-todo-app')}>
+                        <Button onClick={synchTodosWithServer}>
+                            <CloudSyncIcon sx={{ color: 'white' }} />
+                        </Button>
+                        <Button onClick={() => window.open('https://gitlab.com/Decipher-CS/react-todo-app')}>
                             <GitHubIcon sx={{ color: 'white' }} />
                         </Button>
                         <Button onClick={() => setIsDialogOpen(true)}>

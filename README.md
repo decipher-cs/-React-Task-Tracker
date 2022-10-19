@@ -61,6 +61,7 @@ Your average todo app but with quite a few functionalities added to it, such as 
 - [ ] Add time and data to the last time a user accessed the server and delete data if user hasn't accessed anything in over X time.
 - [ ] If connecting to server fails, try after set time.
 - [x] Fix bug encountered when item text length exceeds a certain characters.
+- [ ] Add tooltip on button group next to top level heading.
 
 ### Improvements I could have made
 
