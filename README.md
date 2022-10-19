@@ -9,13 +9,13 @@ Your average todo app but with quite a few functionalities added to it, such as 
 
 ## Table Of Content
 
-- [Acknowledgement](#Acknowledgement)
-- [Dependency Diagram](#Dependency-Diagram)
+- [Acknowledgement](#acknowledgement)
+- [Dependency Diagram](#dependency-diagram)
 - [Links](#links)
-- [Tech used](#Tech-used)
+- [Tech used](#tech-used)
 - [Todo](#todo)
-- [Improvements I could have made](#Improvements-I-could-have-made)
-- [Known unfixable issues](#Known-unfixable-issues)
+- [Improvements I could have made](#improvements-i-could-have-made)
+- [Known unfixable issues](#known-unfixable-issues)
 
 ### Acknowledgement
 
