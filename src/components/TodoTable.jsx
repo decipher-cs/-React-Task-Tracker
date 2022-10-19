@@ -15,13 +15,21 @@ import {
     Snackbar,
     Alert,
     Dialog,
-    IconButton,
+    Switch,
+    List,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
+    ListSubheader,
+    TextField,
 } from '@mui/material/'
 import Brightness3Icon from '@mui/icons-material/Brightness3'
 import CloseIcon from '@mui/icons-material/Close'
 import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest'
 import GitHubIcon from '@mui/icons-material/GitHub'
 import CloudSyncIcon from '@mui/icons-material/CloudSync'
+import StorageIcon from '@mui/icons-material/Storage'
+import DynamicFeedIcon from '@mui/icons-material/DynamicFeed'
 
 function reducer(state, action) {
     switch (action.type) {
@@ -116,7 +124,10 @@ export default function TodoTable(props) {
         })
     }
 
-    let synchTodosWithServer = async () => todos.slice().forEach((item) => editSingleItemInServer(item))
+    let synchTodosWithServer = async () => {
+        todos.slice().forEach((item) => editSingleItemInServer(item))
+        manageDispatcher('info', 'Uploading everything to server.')
+    }
 
     let retryConnectionAttempt = (failedFunction, data) => {
         if (retryCountRef.current > MAX_TRIES) {
@@ -296,10 +307,33 @@ export default function TodoTable(props) {
     return (
         <>
             <Dialog open={isDialogOpen}>
+                <List subheader={<ListSubheader>Settings </ListSubheader>}>
+                    <ListItem>
+                        <ListItemIcon>
+                            <StorageIcon />
+                        </ListItemIcon>
+                        <ListItemText>Use Local Storage</ListItemText>
+                        <Switch onChange={(e) => setUseRemoteStorage(!e.target.checked)} />
+                    </ListItem>
+                    <ListItem>
+                        <ListItemIcon>
+                            <DynamicFeedIcon />
+                        </ListItemIcon>
+                        <ListItemText>Items Per Page</ListItemText>
+                        <TextField
+                            inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', min: 1, max: 100 }}
+                            type='number'
+                            variant='standard'
+                            defaultValue={paginationSize}
+                            onChange={(e) => {
+                                setPaginationSize(e.target.value)
+                            }}
+                        />
+                    </ListItem>
+                </List>
                 <Button onClick={() => setIsDialogOpen(false)}>
                     <CloseIcon />
                 </Button>
-                <Typography p={1}> Settings </Typography>
             </Dialog>
             <Container maxWidth='sm' sx={{ marginTop: '50px' }} className={props.className} style={props.style}>
                 <Snackbar open={state.showSnackbar} autoHideDuration={4000} onClose={() => manageDispatcher('close')}>
@@ -309,15 +343,12 @@ export default function TodoTable(props) {
                     <Typography variant='h3' color='white'>
                         TODO
                     </Typography>
-                    <ButtonGroup variant='text'>
+                    <ButtonGroup variant='text' size='small'>
                         <Button onClick={synchTodosWithServer}>
                             <CloudSyncIcon sx={{ color: 'white' }} />
                         </Button>
                         <Button onClick={() => window.open('https://gitlab.com/Decipher-CS/react-todo-app')}>
                             <GitHubIcon sx={{ color: 'white' }} />
-                        </Button>
-                        <Button onClick={() => setIsDialogOpen(true)}>
-                            <SettingsSuggestIcon sx={{ color: 'white' }} />
                         </Button>
                         <Button onClick={props.toggleDarkmode}>
                             {props.isDarkmode ? (
@@ -325,6 +356,10 @@ export default function TodoTable(props) {
                             ) : (
                                 <LightModeIcon sx={{ color: 'white' }} />
                             )}
+                        </Button>
+
+                        <Button onClick={() => setIsDialogOpen(true)}>
+                            <SettingsSuggestIcon sx={{ color: 'white' }} />
                         </Button>
                     </ButtonGroup>
                 </Stack>
