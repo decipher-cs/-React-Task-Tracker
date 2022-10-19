@@ -1,11 +1,11 @@
-import { useState, useEffect, useReducer } from 'react'
+import { useState, useEffect, useReducer, useRef } from 'react'
 import TodCreator from './TodCreator'
 import TodoContainer from './TodoContainer'
 import { v4 as uuidv4 } from 'uuid'
 import UtilityBar from './UtilityBar'
 import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 import LightModeIcon from '@mui/icons-material/LightMode'
-import { Container, Paper, Stack, Pagination, Typography, Button, Snackbar, Alert } from '@mui/material/'
+import { Container, Paper, Stack, Typography, Button, Snackbar, Alert } from '@mui/material/'
 import Brightness3Icon from '@mui/icons-material/Brightness3'
 
 function reducer(state, action) {
@@ -43,8 +43,9 @@ function reducer(state, action) {
 
 export default function TodoTable(props) {
     // const SERVER_URL = 'http://localhost:8080' // Testing
-    let retryCount = 1
     const SERVER_URL = 'https://doubtful-ox-button.cyclic.app' // Production
+    // const SERVER_URL = 'https:// ' // Production
+    let retryCountRef = useRef(1)
     const [userId, setUserId] = useState(localStorage.getItem('userId'))
     const [loading, setLoading] = useState(true)
     const [todos, setTodos] = useState([])
@@ -100,17 +101,18 @@ export default function TodoTable(props) {
 
     let retryConnectionAttempt = (failedFunction, data) => {
         // TODO stop after x amount of attempts otherwise this can caus
-        if (retryCount >= 5) {
-            retryCount = 0
+        return 0
+        if (retryCountRef.current >= 5) {
+            retryCountRef.current = 0
             return
         }
-        ++retryCount
+        retryCountRef.current++
         setTimeout(() => {
             // failedFunction(data)
-            console.log(retryCount)
-        }, 1000 * retryCount * 2)
+            console.log('ref is : ', retryCountRef.current)
+        }, 2000)
     }
-retryConnectionAttempt(()=>{}, 'dfa')
+    retryConnectionAttempt(() => {}, 'dfa')
     let uponConnectionErrorWithServer = async (err) => {
         console.log('ENCOUNTERED ERROR WHILE CONNECTING TO SERVER :', err)
         manageDispatcher('warning', 'Unable to connect to the database.')
