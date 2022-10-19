@@ -5,8 +5,22 @@ import { v4 as uuidv4 } from 'uuid'
 import UtilityBar from './UtilityBar'
 import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 import LightModeIcon from '@mui/icons-material/LightMode'
-import { Container, Paper, Stack, Typography, Button, Snackbar, Alert } from '@mui/material/'
+import {
+    Container,
+    Paper,
+    Stack,
+    Typography,
+    ButtonGroup,
+    Button,
+    Snackbar,
+    Alert,
+    Dialog,
+    IconButton,
+} from '@mui/material/'
 import Brightness3Icon from '@mui/icons-material/Brightness3'
+import CloseIcon from '@mui/icons-material/Close'
+import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest'
+import GitHubIcon from '@mui/icons-material/GitHub'
 
 function reducer(state, action) {
     switch (action.type) {
@@ -44,9 +58,12 @@ function reducer(state, action) {
 export default function TodoTable(props) {
     // const SERVER_URL = 'http://localhost:8080' // Testing
     const SERVER_URL = 'https://doubtful-ox-button.cyclic.app' // Production
-    // const SERVER_URL = 'https:// ' // Production
-    let retryCountRef = useRef(1)
+    const MAX_TRIES = 3
+
+    const retryCountRef = useRef(1)
+    const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [userId, setUserId] = useState(localStorage.getItem('userId'))
+    const [isPreferredStorageLocalStorage, setIsPreferredStorageLocalStorage] = useState(false)
     const [loading, setLoading] = useState(true)
     const [todos, setTodos] = useState([])
     const [paginationSize, setPaginationSize] = useState(5)
@@ -68,7 +85,7 @@ export default function TodoTable(props) {
         if (!userId) {
             id = uuidv4()
             setUserId(id)
-            localStorage.setItem('userId', id)
+            getItemFromLocalStorage(('userId', id))
         }
         getEverythingFromServer(userId || id)
     }, [])
@@ -84,8 +101,12 @@ export default function TodoTable(props) {
             else tempObj.active++
         })
         setTally(tempObj)
-        updateLocalStorage()
+        updateLocalStorage('current-todos', todos)
     }, [todos])
+
+    let getItemFromLocalStorage = (itemToGet) => JSON.parse(localStorage.getItem(itemToGet))
+
+    let updateLocalStorage = (key, value) => localStorage.setItem(key, JSON.stringify(value))
 
     let manageDispatcher = (severityLevel, messageToDisplay) => {
         dispatch({
@@ -100,43 +121,36 @@ export default function TodoTable(props) {
     }
 
     let retryConnectionAttempt = (failedFunction, data) => {
-        // TODO stop after x amount of attempts otherwise this can caus
-        return 0
-        if (retryCountRef.current >= 5) {
-            retryCountRef.current = 0
+        if (retryCountRef.current > MAX_TRIES) {
+            retryCountRef.current = 1
             return
         }
-        retryCountRef.current++
+        ++retryCountRef.current
         setTimeout(() => {
-            // failedFunction(data)
-            console.log('ref is : ', retryCountRef.current)
-        }, 2000)
+            failedFunction(data)
+        }, 1000 * 2 * retryCountRef.current)
     }
-    retryConnectionAttempt(() => {}, 'dfa')
     let uponConnectionErrorWithServer = async (err) => {
         console.log('ENCOUNTERED ERROR WHILE CONNECTING TO SERVER :', err)
         manageDispatcher('warning', 'Unable to connect to the database.')
     }
 
     let getEverythingFromServer = async (userId) => {
-        let finalRes = []
         try {
             let res = await fetch(`${SERVER_URL}/todos/${userId}`)
             if (!res.ok) {
                 manageDispatcher('warning', 'Unable to connect to server. Using local storage for storing data.')
-                return []
+                setTodos([])
             } else {
                 manageDispatcher('success', 'Connected to the database.')
-                finalRes = await res.json()
+                setTodos(await res.json())
             }
         } catch (err) {
             retryConnectionAttempt(getEverythingFromServer, userId)
             uponConnectionErrorWithServer(err) //TODO USE LOCAL STORAGE HERE
             return []
-        } finally {
-            setTodos(finalRes)
-            setLoading(false)
         }
+        setLoading(false)
     }
 
     let addItemToServer = async (itemObj) => {
@@ -151,6 +165,7 @@ export default function TodoTable(props) {
             }
         } catch (err) {
             uponConnectionErrorWithServer(err)
+            retryConnectionAttempt(addItemToServer, itemObj)
         }
     }
 
@@ -166,6 +181,7 @@ export default function TodoTable(props) {
             }
         } catch (err) {
             uponConnectionErrorWithServer(err)
+            retryConnectionAttempt(deleteItemFromServer, itemUuid)
         }
     }
 
@@ -185,6 +201,7 @@ export default function TodoTable(props) {
             }
         } catch (err) {
             uponConnectionErrorWithServer(err)
+            retryConnectionAttempt(deleteItemFromServer, '')
         }
     }
 
@@ -200,12 +217,9 @@ export default function TodoTable(props) {
             }
         } catch (err) {
             uponConnectionErrorWithServer(err)
+            retryConnectionAttempt(editSingleItemInServer, newItemObj)
         }
     }
-
-    let getItemsFromLocalStorage = () => JSON.parse(localStorage.getItem('current-todos'))
-
-    let updateLocalStorage = () => localStorage.setItem('current-todos', JSON.stringify(todos))
 
     let removeTodo = (_, uuidToRemove) => {
         let newTodoList = todos.slice()
@@ -275,6 +289,12 @@ export default function TodoTable(props) {
 
     return (
         <>
+            <Dialog open={isDialogOpen}>
+                <Button onClick={() => setIsDialogOpen(false)}>
+                    <CloseIcon />
+                </Button>
+                <Typography p={1}> Settings </Typography>
+            </Dialog>
             <Container maxWidth='sm' sx={{ marginTop: '50px' }} className={props.className} style={props.style}>
                 <Snackbar open={state.showSnackbar} autoHideDuration={6000} onClose={() => manageDispatcher('close')}>
                     <Alert severity={state.alertSeverity}>{state.alertMessage}</Alert>
@@ -283,13 +303,22 @@ export default function TodoTable(props) {
                     <Typography variant='h3' color='white'>
                         TODO
                     </Typography>
-                    <Button onClick={props.toggleDarkmode}>
-                        {props.isDarkmode ? (
-                            <Brightness3Icon sx={{ color: 'white' }} />
-                        ) : (
-                            <LightModeIcon sx={{ color: 'white' }} />
-                        )}
-                    </Button>
+                    <ButtonGroup variant='text'>
+
+                        <Button onClick={()=>window.open('https://gitlab.com/Decipher-CS/react-todo-app')}>
+                            <GitHubIcon sx={{ color: 'white' }} />
+                        </Button>
+                        <Button onClick={() => setIsDialogOpen(true)}>
+                            <SettingsSuggestIcon sx={{ color: 'white' }} />
+                        </Button>
+                        <Button onClick={props.toggleDarkmode}>
+                            {props.isDarkmode ? (
+                                <Brightness3Icon sx={{ color: 'white' }} />
+                            ) : (
+                                <LightModeIcon sx={{ color: 'white' }} />
+                            )}
+                        </Button>
+                    </ButtonGroup>
                 </Stack>
                 <TodCreator appendTodo={appendTodo} />
                 <Paper sx={{ borderBottomLeftRadius: '0px', borderBottomRightRadius: '0px' }}>

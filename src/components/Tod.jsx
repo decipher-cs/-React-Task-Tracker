@@ -5,8 +5,6 @@ import Divider from '@mui/material/Divider'
 
 import { useState } from 'react'
 
-import EditOnIcon from './../assets/edit_black_24dp.svg'
-import EditOffIcon from './../assets/edit_off_black_24dp.svg'
 import DeleteIcon from '@mui/icons-material/Delete'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined'

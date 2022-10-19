@@ -25,7 +25,7 @@ Your average todo app but with quite a few functionalities added to it, such as 
 
 ### Dependency Diagram
 
-![Dependency Diagram Of Components](https://gitlab.com/Decipher-CS/react-todo-app/-/blob/main/public/app-dependency-diagram.png)
+![Dependency Diagram Of Components](https://gitlab.com/Decipher-CS/react-todo-app/-/raw/56c7f63c7d1fa54f9fbb3222a2423499014094d0/public/app-dependency-diagram.png)
 
 ### Links
 
