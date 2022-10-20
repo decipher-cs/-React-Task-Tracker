@@ -42,7 +42,7 @@ const Android12Switch = styled(Switch)(({ theme }) => ({
     },
 }))
 
-export default function Tod({
+export default function TodoItem({
     item: textValue,
     index,
     uuid,
@@ -118,3 +118,4 @@ export default function Tod({
         </>
     )
 }
+

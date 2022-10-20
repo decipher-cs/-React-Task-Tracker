@@ -72,7 +72,7 @@ export default function TodoTable(props) {
     const retryCountRef = useRef(1)
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [userId, setUserId] = useState(localStorage.getItem('userId'))
-    const [useRemoteStorage, setUseRemoteStorage] = useState(true)
+    const [useRemoteStorage, setUseRemoteStorage] = useState(localStorage.getItem('useRemoteStorage') === true)
     const [loading, setLoading] = useState(true)
     const [todos, setTodos] = useState([])
     const [paginationSize, setPaginationSize] = useState(5)
@@ -94,9 +94,14 @@ export default function TodoTable(props) {
         if (!userId) {
             id = uuidv4()
             setUserId(id)
-            getItemFromLocalStorage(('userId', id))
+            localStorage.setItem('userId', id)
         }
-        useRemoteStorage && getEverythingFromServer(userId || id)
+        if (useRemoteStorage) {
+            getEverythingFromServer(userId || id)
+        } else {
+            setLoading(false)
+            setTodos(getItemFromLocalStorage('current-todos'))
+        }
     }, [])
 
     useEffect(() => {
@@ -164,6 +169,8 @@ export default function TodoTable(props) {
     }
 
     let addItemToServer = async (itemObj) => {
+        console.log(userId, 'sdfsaf')
+        // return ' '
         try {
             const res = await fetch(`${SERVER_URL}/todos`, {
                 headers: { 'Content-Type': 'application/json' },
@@ -171,7 +178,7 @@ export default function TodoTable(props) {
                 body: JSON.stringify({ ...itemObj, userId }),
             })
             if (!res.ok) {
-                manageDispatcher()
+                manageDispatcher('warning', 'Unable to connect to server. Using local storage for storing data.')
             }
         } catch (err) {
             uponConnectionErrorWithServer(err)
@@ -313,7 +320,13 @@ export default function TodoTable(props) {
                             <StorageIcon />
                         </ListItemIcon>
                         <ListItemText>Use Local Storage</ListItemText>
-                        <Switch onChange={(e) => setUseRemoteStorage(!e.target.checked)} />
+                        <Switch
+                            checked={!useRemoteStorage}
+                            onChange={(e) => {
+                                setUseRemoteStorage(!e.target.checked)
+                                updateLocalStorage('useRemoteStorage', !e.target.checked)
+                            }}
+                        />
                     </ListItem>
                     <ListItem>
                         <ListItemIcon>

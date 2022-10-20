@@ -1,4 +1,4 @@
-import Tod from './Tod'
+import TodoItem from './TodoItem'
 import Divider from '@mui/material/Divider'
 import { Draggable } from 'react-beautiful-dnd'
 import Skeleton from '@mui/material/Skeleton'
@@ -38,7 +38,7 @@ function createTodoItem(item, listFunctions, index) {
         <Draggable draggableId={item.uuid.toString()} key={item.uuid.toString()} index={index}>
             {(provided) => (
                 <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-                    <Tod
+                    <TodoItem
                         index={index}
                         item={item.todoText}
                         uuid={item.uuid}
