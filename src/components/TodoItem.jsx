@@ -16,10 +16,14 @@ export default function TodoItem({
     listFunctions,
     // ...props
 }) {
-    const isScreenSizeSmall = useMediaQuery('(max-width:390px)')
+    const isScreenSizeSmall = useMediaQuery('(max-width:430px)')
+
     const [tempValue, setTempValue] = useState(textValue)
+
     const [isDisabled, setDisabled] = useState(true)
+
     const [isInputInvalid, setInputInvalid] = useState(false)
+        
     const makeBoxEditable = () => {
         if (isDisabled) {
             setDisabled(false)
@@ -54,9 +58,9 @@ export default function TodoItem({
                     />
                     <Container>
                         {isDisabled ? (
-                            <Typography className={isComplete ? 'mark-item' : ''}>
-                                {handleVisibleTextValue(textValue)}
-                            </Typography>
+                                <Typography className={isComplete ? 'mark-item' : ''} noWrap>
+                                    {handleVisibleTextValue(textValue)}
+                                </Typography>
                         ) : (
                             <Input
                                 defaultValue={textValue}

@@ -67,16 +67,25 @@ function reducer(state, action) {
 export default function TodoTable(props) {
     // const SERVER_URL = 'http://localhost:8080' // Testing
     const SERVER_URL = 'https://doubtful-ox-button.cyclic.app' // Production
+
     const MAX_TRIES = 3
 
     const retryCountRef = useRef(1)
+
     const [isDialogOpen, setIsDialogOpen] = useState(false)
+
     const [userId, setUserId] = useState(localStorage.getItem('userId'))
+
     const [useRemoteStorage, setUseRemoteStorage] = useState(localStorage.getItem('useRemoteStorage') === true)
+
     const [loading, setLoading] = useState(true)
+
     const [todos, setTodos] = useState([])
+
     const [paginationSize, setPaginationSize] = useState(5)
+
     const [currPage, setCurrPage] = useState(1)
+
     const [tally, setTally] = useState({
         all: todos.length,
         active: 0,

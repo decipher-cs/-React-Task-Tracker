@@ -4,8 +4,11 @@ import useMediaQuery from '@mui/material/useMediaQuery'
 
 const UtilityBar = ({ filterList, clearAllCompleted, tally, currPage, setCurrPage, paginationSize }) => {
     const [filterType, setFilterType] = useState('all')
+
     const [selectValue, setSelectValue] = useState(1)
+
     const isScreenSizeBig = useMediaQuery('(min-width:900px)')
+
     const isScreenSizeSmall = useMediaQuery('(max-width:390px)')
 
     function paginationBar() {
