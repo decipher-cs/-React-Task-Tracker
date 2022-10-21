@@ -101,6 +101,7 @@ export default function TodoTable(props) {
     })
 
     useEffect(() => {
+        console.log('%c𝘽𝙊𝙊𝙈 𝙔𝙊𝙐 𝙇𝙊𝙊𝙆𝙄𝙉𝙂 𝙁𝙊𝙍 𝙏𝙃𝙄𝙎!', 'background: black; color: white; font-size: x-large')
         let id
         if (!userId) {
             id = uuidv4()
