@@ -62,7 +62,7 @@ Your average todo app but with quite a few functionalities added to it, such as 
 - [x] Add time and data to the last time a user accessed the server and delete data if user hasn't accessed anything in over X time. MySQL events.
 - [x] If connecting to server fails, try after set time.
 - [x] Fix bug encountered when item text length exceeds a certain characters.
-- [ ] Add tooltip on button group next to top level heading.
+- [x] Add tooltip on button group next to top level heading.
 
 ### Improvements I could have made
 
@@ -75,4 +75,5 @@ Could have :
 
 Issues that have come to my attention but will not be fixed for one reason or another.
 
-- The list order will change on refresh due to the database having its own sequence of items.
+- The list order will change on refresh due to the database having its own sequence of items. _Know how to fix it? Let me know_
+- When item is checked/ unchecked while user has selected any filter option other than 'all', the wrong item is marked as done/ not done.
