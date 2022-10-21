@@ -22,6 +22,7 @@ import {
     ListItemText,
     ListSubheader,
     TextField,
+    Tooltip,
 } from '@mui/material/'
 import Brightness3Icon from '@mui/icons-material/Brightness3'
 import CloseIcon from '@mui/icons-material/Close'
@@ -383,23 +384,30 @@ export default function TodoTable(props) {
                         TODO
                     </Typography>
                     <ButtonGroup variant='text' size='small'>
-                        <Button onClick={syncTodosWithServer}>
-                            <CloudSyncIcon sx={{ color: 'white' }} />
-                        </Button>
-                        <Button onClick={() => window.open('https://gitlab.com/Decipher-CS/react-todo-app')}>
-                            <GitHubIcon sx={{ color: 'white' }} />
-                        </Button>
-                        <Button onClick={props.toggleDarkmode}>
-                            {props.isDarkmode ? (
-                                <Brightness3Icon sx={{ color: 'white' }} />
-                            ) : (
-                                <LightModeIcon sx={{ color: 'white' }} />
-                            )}
-                        </Button>
-
-                        <Button onClick={() => setIsDialogOpen(true)}>
-                            <SettingsSuggestIcon sx={{ color: 'white' }} />
-                        </Button>
+                        <Tooltip title='Sync With Server'>
+                            <Button onClick={syncTodosWithServer}>
+                                <CloudSyncIcon sx={{ color: 'white' }} />
+                            </Button>
+                        </Tooltip>
+                        <Tooltip title='GitLab'>
+                            <Button onClick={() => window.open('https://gitlab.com/Decipher-CS/react-todo-app')}>
+                                <GitHubIcon sx={{ color: 'white' }} />
+                            </Button>
+                        </Tooltip>
+                        <Tooltip title='Change Theme'>
+                            <Button onClick={props.toggleDarkmode}>
+                                {props.isDarkmode ? (
+                                    <Brightness3Icon sx={{ color: 'white' }} />
+                                ) : (
+                                    <LightModeIcon sx={{ color: 'white' }} />
+                                )}
+                            </Button>
+                        </Tooltip>
+                        <Tooltip title='Settings'>
+                            <Button onClick={() => setIsDialogOpen(true)}>
+                                <SettingsSuggestIcon sx={{ color: 'white' }} />
+                            </Button>
+                        </Tooltip>
                     </ButtonGroup>
                 </Stack>
                 <TodCreator appendTodo={appendTodo} />
