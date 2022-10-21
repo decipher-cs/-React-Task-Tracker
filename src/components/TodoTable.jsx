@@ -66,6 +66,7 @@ function reducer(state, action) {
 
 export default function TodoTable(props) {
     // const SERVER_URL = 'http://localhost:8080' // Testing
+
     const SERVER_URL = 'https://doubtful-ox-button.cyclic.app' // Production
 
     const MAX_TRIES = 3
@@ -76,7 +77,7 @@ export default function TodoTable(props) {
 
     const [userId, setUserId] = useState(localStorage.getItem('userId'))
 
-    const [useRemoteStorage, setUseRemoteStorage] = useState(localStorage.getItem('useRemoteStorage') === true)
+    const [useRemoteStorage, setUseRemoteStorage] = useState(localStorage.getItem('useRemoteStorage') == 'true')
 
     const [loading, setLoading] = useState(true)
 
@@ -87,7 +88,7 @@ export default function TodoTable(props) {
     const [currPage, setCurrPage] = useState(1)
 
     const [tally, setTally] = useState({
-        all: todos.length,
+        all: todos ? todos.length : 0,
         active: 0,
         completed: 0,
     })
@@ -105,24 +106,21 @@ export default function TodoTable(props) {
             setUserId(id)
             localStorage.setItem('userId', id)
         }
-        if (useRemoteStorage) {
-            getEverythingFromServer(userId || id)
-        } else {
-            setLoading(false)
+        useRemoteStorage ? getEverythingFromServer(userId) : setLoading(false),
             setTodos(getItemFromLocalStorage('current-todos'))
-        }
     }, [])
 
     useEffect(() => {
         let tempObj = {
-            all: todos.length,
+            all: todos ? todos.length : 0,
             active: 0,
             completed: 0,
         }
-        todos.forEach((item) => {
-            if (item.isComplete) tempObj.completed++
-            else tempObj.active++
-        })
+        todos &&
+            todos.forEach((item) => {
+                if (item.isComplete) tempObj.completed++
+                else tempObj.active++
+            })
         setTally(tempObj)
         updateLocalStorage('current-todos', todos)
     }, [todos])
@@ -138,13 +136,13 @@ export default function TodoTable(props) {
         })
     }
 
-    let synchTodosWithServer = async () => {
-        todos.slice().forEach((item) => editSingleItemInServer(item))
-        manageDispatcher('info', 'Uploading everything to server.')
-    }
-
     let retryConnectionAttempt = (failedFunction, data) => {
         if (retryCountRef.current > MAX_TRIES) {
+            setUseRemoteStorage(false)
+            manageDispatcher(
+                'info',
+                'Error encountered while connecting to the server. Switching to local storage for now.'
+            )
             retryCountRef.current = 1
             return
         }
@@ -178,8 +176,6 @@ export default function TodoTable(props) {
     }
 
     let addItemToServer = async (itemObj) => {
-        console.log(userId, 'sdfsaf')
-        // return ' '
         try {
             const res = await fetch(`${SERVER_URL}/todos`, {
                 headers: { 'Content-Type': 'application/json' },
@@ -192,6 +188,27 @@ export default function TodoTable(props) {
         } catch (err) {
             uponConnectionErrorWithServer(err)
             retryConnectionAttempt(addItemToServer, itemObj)
+        }
+    }
+
+    let syncTodosWithServer = async () => {
+        manageDispatcher('info', 'Syncing everything with server')
+        try {
+            let res = await fetch(`${SERVER_URL}/todos/sync`, {
+                headers: { 'Content-Type': 'application/json' },
+                method: 'POST',
+                body: JSON.stringify({ todos, userId }),
+            })
+            if (!res.ok) {
+                manageDispatcher('warning', 'Unable to connect to server. Using local storage for storing data.')
+                return
+            }
+            res = await res.json()
+            setTodos((prev) => prev.concat(res))
+            manageDispatcher('success', 'Syncing With Server Was Successful')
+        } catch (err) {
+            uponConnectionErrorWithServer(err)
+            retryConnectionAttempt(syncTodosWithServer, '')
         }
     }
 
@@ -333,7 +350,7 @@ export default function TodoTable(props) {
                             checked={!useRemoteStorage}
                             onChange={(e) => {
                                 setUseRemoteStorage(!e.target.checked)
-                                updateLocalStorage('useRemoteStorage', !e.target.checked)
+                                localStorage.setItem('useRemoteStorage', !e.target.checked)
                             }}
                         />
                     </ListItem>
@@ -366,7 +383,7 @@ export default function TodoTable(props) {
                         TODO
                     </Typography>
                     <ButtonGroup variant='text' size='small'>
-                        <Button onClick={synchTodosWithServer}>
+                        <Button onClick={syncTodosWithServer}>
                             <CloudSyncIcon sx={{ color: 'white' }} />
                         </Button>
                         <Button onClick={() => window.open('https://gitlab.com/Decipher-CS/react-todo-app')}>

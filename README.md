@@ -6,6 +6,7 @@ Your average todo app but with quite a few functionalities added to it, such as 
 - Database to handle list items
 - Toast for a better user-system communication
 - Dark mode
+- Task syncing, and many more...
 
 ## Table Of Content
 
@@ -58,7 +59,7 @@ Your average todo app but with quite a few functionalities added to it, such as 
 - [x] Setup corn on the backend.
 - [x] Add function to sycn everything with server with a manual button press or with a snackbar prompt asking to do so on data inconsistency.
 - [x] MySQL database is the same for every user. Implement different todo items for different useres.
-- [ ] Add time and data to the last time a user accessed the server and delete data if user hasn't accessed anything in over X time.
+- [x] Add time and data to the last time a user accessed the server and delete data if user hasn't accessed anything in over X time. MySQL events.
 - [x] If connecting to server fails, try after set time.
 - [x] Fix bug encountered when item text length exceeds a certain characters.
 - [ ] Add tooltip on button group next to top level heading.
