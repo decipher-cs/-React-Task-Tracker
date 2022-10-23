@@ -70,6 +70,7 @@ Could have :
 
 - Used useReducer for updating, deleting, adding the todos.
 - Used context API to manage props.
+- Used sockets in the backend for talking with the database.
 
 ### Known unfixable issues
 
