@@ -6,7 +6,11 @@ Your average todo app but with quite a few functionalities added to it, such as 
 - Database to handle list items
 - Toast for a better user-system communication
 - Dark mode
-- Task syncing, and many more...
+- Task syncing, and much more...
+
+[Try here](https://golden-liger-9ba371.netlify.app/)
+
+![](./public/todo app demo.gif)
 
 ## Table Of Content
 
