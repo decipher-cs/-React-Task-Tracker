@@ -10,7 +10,7 @@ Your average todo app but with quite a few functionalities added to it, such as 
 
 [Try here](https://golden-liger-9ba371.netlify.app/)
 
-![](./public/todo app demo.gif)
+![App demo](./public/todo app demo.gif)
 
 ## Table Of Content
 
