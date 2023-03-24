@@ -267,7 +267,7 @@ export default function TodoTable(props) {
     }
 
     let removeTodo = (_, uuidToRemove) => {
-        let newTodoList = todos.slice()
+        let newTodoList = todos?.slice()
         useRemoteStorage && deleteItemFromServer(uuidToRemove)
         newTodoList = newTodoList.filter((item) => item.uuid !== uuidToRemove)
         setTodos(newTodoList)

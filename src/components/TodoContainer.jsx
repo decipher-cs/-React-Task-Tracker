@@ -67,7 +67,7 @@ export default function TodoContainer({
                       .fill()
                       .map((_, i) => createSkeleton(i))
                 : todos
-                      .filter((item) => !item.isHidden)
+                      ?.filter((item) => !item.isHidden)
                       .map((item, index) => createTodoItem(item, listFunctions, index))
                       .slice((currPage - 1) * paginationSize, (currPage - 1) * paginationSize + paginationSize)}
         </>
