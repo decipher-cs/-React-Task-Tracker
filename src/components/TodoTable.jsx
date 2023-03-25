@@ -119,7 +119,7 @@ export default function TodoTable(props) {
             completed: 0,
         }
         todos &&
-            todos.forEach((item) => {
+            todos.forEach(item => {
                 if (item.isComplete) tempObj.completed++
                 else tempObj.active++
             })
@@ -127,7 +127,7 @@ export default function TodoTable(props) {
         updateLocalStorage('current-todos', todos)
     }, [todos])
 
-    let getItemFromLocalStorage = (itemToGet) => JSON.parse(localStorage.getItem(itemToGet))
+    let getItemFromLocalStorage = itemToGet => JSON.parse(localStorage.getItem(itemToGet))
 
     let updateLocalStorage = (key, value) => localStorage.setItem(key, JSON.stringify(value))
 
@@ -154,12 +154,12 @@ export default function TodoTable(props) {
         }, 1000 * 2 * retryCountRef.current)
     }
 
-    let uponConnectionErrorWithServer = async (err) => {
+    let uponConnectionErrorWithServer = async err => {
         console.log('ENCOUNTERED ERROR WHILE CONNECTING TO SERVER :', err)
         manageDispatcher('warning', 'Unable to connect to the database.')
     }
 
-    let getEverythingFromServer = async (userId) => {
+    let getEverythingFromServer = async userId => {
         try {
             let res = await fetch(`${SERVER_URL}/todos/${userId}`)
             if (!res.ok) {
@@ -177,7 +177,7 @@ export default function TodoTable(props) {
         setLoading(false)
     }
 
-    let addItemToServer = async (itemObj) => {
+    let addItemToServer = async itemObj => {
         try {
             const res = await fetch(`${SERVER_URL}/todos`, {
                 headers: { 'Content-Type': 'application/json' },
@@ -206,7 +206,7 @@ export default function TodoTable(props) {
                 return
             }
             res = await res.json()
-            setTodos((prev) => prev.concat(res))
+            setTodos(prev => prev.concat(res))
             manageDispatcher('success', 'Syncing With Server Was Successful')
         } catch (err) {
             uponConnectionErrorWithServer(err)
@@ -214,7 +214,7 @@ export default function TodoTable(props) {
         }
     }
 
-    let deleteItemFromServer = async (itemUuid) => {
+    let deleteItemFromServer = async itemUuid => {
         try {
             const res = await fetch(`${SERVER_URL}/todos/${itemUuid}`, {
                 headers: { 'Content-Type': 'application/json' },
@@ -250,7 +250,7 @@ export default function TodoTable(props) {
         }
     }
 
-    let editSingleItemInServer = async (newItemObj) => {
+    let editSingleItemInServer = async newItemObj => {
         try {
             const res = await fetch(SERVER_URL + '/todos/updateTodo', {
                 method: 'POST',
@@ -269,10 +269,10 @@ export default function TodoTable(props) {
     let removeTodo = (_, uuidToRemove) => {
         let newTodoList = todos?.slice()
         useRemoteStorage && deleteItemFromServer(uuidToRemove)
-        newTodoList = newTodoList.filter((item) => item.uuid !== uuidToRemove)
+        newTodoList = newTodoList.filter(item => item.uuid !== uuidToRemove)
         setTodos(newTodoList)
         updateLocalStorage('current-todos', newTodoList)
-        if ((tally.all - 1) % paginationSize == 0 && currPage != 1) setCurrPage((prev) => prev - 1)
+        if ((tally.all - 1) % paginationSize == 0 && currPage != 1) setCurrPage(prev => prev - 1)
     }
 
     let appendTodo = (e, isChecked) => {
@@ -284,16 +284,19 @@ export default function TodoTable(props) {
                 isHidden: false,
                 isComplete: isChecked,
             }
-            setTodos((prev) => prev.concat([newObj]))
+            setTodos(prev => {
+                if (prev === null || prev === undefined) return [newObj]
+                return prev.concat([newObj])
+            })
             useRemoteStorage && addItemToServer(newObj)
-            updateLocalStorage('current-todos', todos.slice().concat([newObj]))
+            if (todos !== null) updateLocalStorage('current-todos', todos?.slice().concat([newObj]))
             e.target.value = ''
         }
     }
 
-    let handleFilter = (filterType) => {
+    let handleFilter = filterType => {
         let filteredList = todos.slice()
-        filteredList.map((item) => {
+        filteredList.map(item => {
             if (filterType.toLowerCase() === 'all'.toLowerCase()) {
                 item.isHidden = false
             } else if (filterType.toLowerCase() === 'completed'.toLowerCase()) {
@@ -309,7 +312,7 @@ export default function TodoTable(props) {
 
     let clearAllCompleted = () => {
         let listCopy = todos.slice()
-        listCopy = listCopy.filter((item) => item.isComplete !== true)
+        listCopy = listCopy.filter(item => item.isComplete !== true)
         useRemoteStorage && deleteCompletedItemsFromServer()
         setTodos(listCopy)
         updateLocalStorage('current-todos', listCopy)
@@ -331,7 +334,7 @@ export default function TodoTable(props) {
         updateLocalStorage('current-todos', newTodoList)
     }
 
-    let handleDrag = (e) => {
+    let handleDrag = e => {
         if (!e.destination) return
         let reorderedList = todos.slice()
         let [tempObj] = reorderedList.splice(e.source.index, 1)
@@ -350,7 +353,7 @@ export default function TodoTable(props) {
                         <ListItemText>Use Local Storage</ListItemText>
                         <Switch
                             checked={!useRemoteStorage}
-                            onChange={(e) => {
+                            onChange={e => {
                                 setUseRemoteStorage(!e.target.checked)
                                 localStorage.setItem('useRemoteStorage', !e.target.checked)
                             }}
@@ -366,7 +369,7 @@ export default function TodoTable(props) {
                             type='number'
                             variant='standard'
                             defaultValue={paginationSize}
-                            onChange={(e) => {
+                            onChange={e => {
                                 setPaginationSize(e.target.value)
                             }}
                         />
@@ -415,7 +418,7 @@ export default function TodoTable(props) {
                 <Paper sx={{ borderBottomLeftRadius: '0px', borderBottomRightRadius: '0px' }}>
                     <DragDropContext onDragEnd={handleDrag}>
                         <Droppable droppableId='list-container'>
-                            {(provided) => (
+                            {provided => (
                                 <div {...provided.droppableProps} ref={provided.innerRef}>
                                     <TodoContainer
                                         todos={todos}
