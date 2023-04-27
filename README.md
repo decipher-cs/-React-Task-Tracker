@@ -8,6 +8,8 @@ Your average todo app but with quite a few functionalities added to it, such as 
 - Dark mode
 - Task syncing, and much more...
 
+*Note: mySQL is deployed on planetscale's free tier plan which will put the database to sleep after some time, rendering it unusable.*
+
 [Try here](https://golden-liger-9ba371.netlify.app/)
 
 ![App demo](./public/todo-app-demo.gif)
